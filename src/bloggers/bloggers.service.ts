@@ -4,7 +4,7 @@ import { CustomResponseType } from 'src/types';
 
 import { BloggersRepository } from './bloggers.repository';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
-import { GetBloggersFilterDto } from './dto/get-bloggers-filter.dto';
+import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class BloggersService {
   constructor(protected bloggersRepository: BloggersRepository) {}
 
   async getBloggers(
-    filterDto: GetBloggersFilterDto,
+    filterDto: FilterDto,
   ): Promise<CustomResponseType> {
     return this.bloggersRepository.getBloggers(filterDto);
   }
@@ -45,4 +45,5 @@ export class BloggersService {
   async deleteAllBloggers():Promise<boolean>{
     return this.bloggersRepository.deleteAllBloggers()
   }
+
 }

@@ -13,16 +13,18 @@ import { Blogger } from 'src/schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
 import { BloggersService } from './bloggers.service';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
-import { GetBloggersFilterDto } from './dto/get-bloggers-filter.dto';
+import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
+import { CreatePostDto } from 'src/posts/dto/create-post.dto';
+import { PostsService } from 'src/posts/posts.service';
 
 @Controller('bloggers')
 export class BloggersController {
-  constructor(protected bloggersService: BloggersService) {}
+  constructor(protected bloggersService: BloggersService, private postsService: PostsService) {}
 
   @Get()
   async getBloggers(
-    @Query() filterDto: GetBloggersFilterDto,
+    @Query() filterDto: FilterDto,
   ): Promise<CustomResponseType> {
     return this.bloggersService.getBloggers(filterDto);
   }
@@ -66,22 +68,25 @@ export class BloggersController {
     const isDeleted: boolean = await this.bloggersService.deleteAllBloggers();
     return isDeleted;
   }
-}
 
-//   async getBloggerPosts(req: Request, res: Response) {
-//     const { PageNumber = 1, PageSize = 10 } = req.query as QueryType;
-//     const bloggerPosts = await this.bloggersService.getAllBloggerPosts(
-//       req.params.bloggerId,
-//       PageNumber,
-//       PageSize,
-//     );
-//     bloggerPosts ? res.json(bloggerPosts) : res.sendStatus(404);
-//   }
+  @Get('/:id/posts')
+  async getBloggerPosts(
+    @Param('id') id: string,
+    @Query() filterDto: FilterDto,
+  ) {
+    const bloggerPosts = await this.postsService.getAllBloggerPosts(
+      id,
+      filterDto,
+    );
+    return bloggerPosts;
+  }
 
-//   async createBloggerPost(req: Request, res: Response) {
-//     const { body, params } = req;
-//     const newPost = await this.postsService.createPost(body, params);
+  @Post('/:id/posts')
+  async createBloggerPost(@Param('id') id: string, @Body()createPostDto: CreatePostDto) {
 
-//     newPost ? res.status(201).json(newPost) : res.sendStatus(404);
-//   }
-//
+    const newPost = await this.postsService.createPost(createPostDto,id);
+
+    return newPost
+  }
+}  
+

@@ -1,6 +1,6 @@
 import { IsOptional } from 'class-validator';
 
-export class GetBloggersFilterDto {
+export class FilterDto {
   @IsOptional()
   SearchNameTerm?: string = null;
   @IsOptional()

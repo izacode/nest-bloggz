@@ -4,23 +4,20 @@ import { Model } from 'mongoose';
 import { Blogger } from 'src/schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
-import { GetBloggersFilterDto } from './dto/get-bloggers-filter.dto';
+import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
 
 @Injectable()
 export class BloggersRepository {
   constructor(
-    @InjectModel(Blogger.name) private bloggerModel: Model<Blogger>,
-  ) {}
+    @InjectModel(Blogger.name) private bloggerModel: Model<Blogger>) {}
 
-  async getBloggers(
-    filterDto: GetBloggersFilterDto,
-  ): Promise<CustomResponseType> {
+  async getBloggers(filterDto: FilterDto): Promise<CustomResponseType> {
     const { SearchNameTerm, PageNumber, PageSize } = filterDto;
     let filter =
-      SearchNameTerm === undefined ? {} : { name: { $regex: SearchNameTerm } };
+      SearchNameTerm === null ? {} : { name: { $regex: SearchNameTerm } };
     const bloggers: Blogger[] = await this.bloggerModel
-      .find({})
+      .find(filter)
       .skip((+PageNumber - 1) * +PageSize)
       .limit(+PageSize)
       .exec();
@@ -41,19 +38,16 @@ export class BloggersRepository {
     await this.bloggerModel.create(newBlogger);
     const createdBlogger = await this.bloggerModel.findOne(
       { id: newBlogger.id },
-      { projection: { _id: 0 } },
+      '-_id -__v',
     );
     return createdBlogger;
   }
 
   async getBlogger(id: string): Promise<Blogger> {
-    const foundBlogger = await this.bloggerModel.findOne(
-      { id },
-      { projection: { _id: 0 } },
-    ).exec();
-    debugger
-    if (!foundBlogger)
-      throw new NotFoundException({});
+    const foundBlogger = await this.bloggerModel
+      .findOne({ id }, { projection: { _id: 0 } })
+      .exec();
+    if (!foundBlogger) throw new NotFoundException({});
     return foundBlogger;
   }
   async updateBlogger(
@@ -70,8 +64,7 @@ export class BloggersRepository {
   }
 
   async deleteBlogger(id: string): Promise<boolean> {
-    
-    const isDeleted = await this.bloggerModel.deleteOne({ id })
+    const isDeleted = await this.bloggerModel.deleteOne({ id });
     return isDeleted.deletedCount === 1;
   }
 
@@ -81,4 +74,25 @@ export class BloggersRepository {
     if (totalCount !== 0) return false;
     return true;
   }
+
+  // async getAllBloggerPosts(id: string, filterDto: FilterDto) {
+  //   const { PageNumber, PageSize } = filterDto;
+
+  //   const posts: Post[] = await this.postModel
+  //     .find({bloggerId: id})
+  //     .skip((+PageNumber - 1) * +PageSize)
+  //     .limit(+PageSize)
+  //     .exec();
+  //   const totalCount: number = await this.bloggerModel.countDocuments({bloggerId: id});
+
+  //   const customResponse = {
+  //     pagesCount: Math.ceil(totalCount / +PageSize),
+  //     page: +PageNumber,
+  //     pageSize: +PageSize,
+  //     totalCount,
+  //     items: posts,
+  //   };
+
+  //   return customResponse;
+  // }
 }
