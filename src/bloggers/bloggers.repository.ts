@@ -6,18 +6,21 @@ import { CustomResponseType } from 'src/types';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
 import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
+import { Post } from 'src/schemas/post.schema';
 
 @Injectable()
 export class BloggersRepository {
   constructor(
-    @InjectModel(Blogger.name) private bloggerModel: Model<Blogger>) {}
+    @InjectModel(Blogger.name) private bloggerModel: Model<Blogger>,
+    @InjectModel(Post.name) private postModel: Model<Post>,
+  ) {}
 
   async getBloggers(filterDto: FilterDto): Promise<CustomResponseType> {
-    const { SearchNameTerm, PageNumber, PageSize } = filterDto;
+    const { SearchNameTerm, PageNumber = 1, PageSize = 10 } = filterDto;
     let filter =
-      SearchNameTerm === null ? {} : { name: { $regex: SearchNameTerm } };
+      SearchNameTerm === undefined ? {} : { name: { $regex: SearchNameTerm } };
     const bloggers: Blogger[] = await this.bloggerModel
-      .find(filter)
+      .find(filter, '-_id -__v')
       .skip((+PageNumber - 1) * +PageSize)
       .limit(+PageSize)
       .exec();
@@ -45,7 +48,7 @@ export class BloggersRepository {
 
   async getBlogger(id: string): Promise<Blogger> {
     const foundBlogger = await this.bloggerModel
-      .findOne({ id }, { projection: { _id: 0 } })
+      .findOne({ id }, '-_id -__v')
       .exec();
     if (!foundBlogger) throw new NotFoundException({});
     return foundBlogger;
@@ -74,25 +77,4 @@ export class BloggersRepository {
     if (totalCount !== 0) return false;
     return true;
   }
-
-  // async getAllBloggerPosts(id: string, filterDto: FilterDto) {
-  //   const { PageNumber, PageSize } = filterDto;
-
-  //   const posts: Post[] = await this.postModel
-  //     .find({bloggerId: id})
-  //     .skip((+PageNumber - 1) * +PageSize)
-  //     .limit(+PageSize)
-  //     .exec();
-  //   const totalCount: number = await this.bloggerModel.countDocuments({bloggerId: id});
-
-  //   const customResponse = {
-  //     pagesCount: Math.ceil(totalCount / +PageSize),
-  //     page: +PageNumber,
-  //     pageSize: +PageSize,
-  //     totalCount,
-  //     items: posts,
-  //   };
-
-  //   return customResponse;
-  // }
 }

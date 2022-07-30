@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blogger } from 'src/schemas/blogger.schema';
@@ -13,12 +13,12 @@ export class PostsRepository {
   @InjectModel(Post.name) private postModel: Model<Post>;
   @InjectModel(Blogger.name) private bloggerModel: Model<Blogger>;
   async getPosts(filterDto: FilterDto): Promise<CustomResponseType> {
-    const { SearchNameTerm, PageNumber, PageSize } = filterDto;
+    const { SearchNameTerm, PageNumber = 1, PageSize = 10 } = filterDto;
     let filter =
-      SearchNameTerm === null ? {} : { title: { $regex: SearchNameTerm } };
+      SearchNameTerm === undefined ? {} : { title: { $regex: SearchNameTerm } };
 
     const posts: Post[] = await this.postModel
-      .find(filter)
+      .find(filter, '-_id -__v')
       .skip((+PageNumber - 1) * +PageSize)
       .limit(+PageSize)
       .exec();
@@ -53,8 +53,8 @@ export class PostsRepository {
 
   async getPost(id: string): Promise<Post> {
     const bloggers = await this.bloggerModel.find().exec();
-    const post = await this.postModel.findOne({ id }).exec();
-    if (!post) return null;
+    const post = await this.postModel.findOne({ id }, '-__v').exec();
+    if (!post) throw new NotFoundException();
     const postWithBloggerName: Post = Object.assign(post, {
       bloggerName: bloggers.find((b) => b.id === post?.bloggerId.toString())
         ?.name,
@@ -86,18 +86,20 @@ export class PostsRepository {
     return true;
   }
 
-  async getAllBloggerPosts(id: string, filterDto: FilterDto):Promise<CustomResponseType> {
+  async getAllBloggerPosts(
+    id: string,
+    filterDto: FilterDto,
+  ): Promise<CustomResponseType> {
     const { PageNumber, PageSize } = filterDto;
 
     const posts: Post[] = await this.postModel
-      .find({ bloggerId: id })
+      .find({ bloggerId: id }, '-_id -__v')
       .skip((+PageNumber - 1) * +PageSize)
       .limit(+PageSize)
       .exec();
     const totalCount: number = await this.postModel.countDocuments({
       bloggerId: id,
     });
-
     const customResponse = {
       pagesCount: Math.ceil(totalCount / +PageSize),
       page: +PageNumber,

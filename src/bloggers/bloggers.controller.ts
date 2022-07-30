@@ -20,6 +20,7 @@ import { PostsService } from 'src/posts/posts.service';
 
 @Controller('bloggers')
 export class BloggersController {
+  
   constructor(protected bloggersService: BloggersService, private postsService: PostsService) {}
 
   @Get()

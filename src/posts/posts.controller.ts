@@ -1,15 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { CommentsService } from 'src/comments/comments.service';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
 import { FilterDto } from 'src/dto/filter.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsService } from './posts.service';
 
+
 @Controller('posts')
 export class PostsController {
   constructor(
     protected postsService: PostsService,
-    // protected commentsService: CommentsService,
+    protected commentsService: CommentsService,
   ) {}
 
   @Get()
@@ -38,33 +50,34 @@ export class PostsController {
 
     return isUpdated;
   }
-@Delete("/:id")
-  async deletePost(@Param("id") id: string) {
+  @Delete('/:id')
+  async deletePost(@Param('id') id: string) {
     const isDeleted = await this.postsService.deletePost(id);
-    return isDeleted
+    return isDeleted;
   }
 
-  // async getPostComments(req: Request, res: Response) {
-  //   const { PageNumber = 1, PageSize = 10 } = req.query as QueryType;
-  //   const post = await this.postsService.getPost(req.params.id);
-  //   if (!post) return res.sendStatus(404);
-  //   const postComments = await this.commentsService.getAllPostComments(
-  //     post.id!,
-  //     PageNumber,
-  //     PageSize,
-  //   );
-  //   res.send(postComments);
-  // }
-
-  // async createPostComment(req: Request, res: Response) {
-  //   const post = await this.postsService.getPost(req.params.id);
-  //   if (!post) return res.sendStatus(404);
-  //   const newComment = await this.commentsService.createComment(
-  //     req.params.id,
-  //     req.body.content,
-  //     req.context.user!._id,
-  //     req.context.user!.accountData.userName,
-  //   );
-  //   res.status(201).send(newComment);
-  // }
+  @Get('/:id/comments')
+  async getPostComments(
+    @Param('id') id: string,
+    @Query() filterDto: FilterDto,
+  ) {
+    await this.postsService.getPost(id);
+    const postComments = await this.commentsService.getPostComments(
+      id,
+      filterDto,
+    );
+    return postComments;
+  }
+  @Post('/:id/comments')
+  async createPostComment(
+    @Param('id') id: string,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    const post = await this.postsService.getPost(id);
+    const newComment = await this.commentsService.createComment(
+      id,
+      createCommentDto,
+    );
+    return newComment;
+  }
 }

@@ -12,6 +12,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   @MaxLength(1000)
   content: string;
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   bloggerId: string;

@@ -1,11 +1,11 @@
-import { Blogger } from "./schemas/blogger.schema";
-import { Post } from "./schemas/post.schema";
+import { Blogger } from './schemas/blogger.schema';
+import { Post } from './schemas/post.schema';
+import { Comment } from './schemas/comment.schema';
 
-
-export class CustomResponseType{
+export class CustomResponseType {
   pagesCount: number;
   page: number;
   pageSize: number;
   totalCount: number;
-  items: Blogger[] | Post[]
-};
+  items: Blogger[] | Post[] | Comment[];
+}
