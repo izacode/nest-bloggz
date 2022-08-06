@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from 'src/schemas/comment.schema';
 import { FilterDto } from 'src/dto/filter.dto';
-import { CustomResponseType } from 'src/types';
+import { CustomResponseType } from 'src/main/types';
 
 @Injectable()
 export class CommentsRepository {

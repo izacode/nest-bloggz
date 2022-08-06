@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CustomResponseType } from 'src/types';
+import { CustomResponseType } from 'src/main/types';
 
 import { BloggersRepository } from './bloggers.repository';
 import { CreateBloggerDto } from './dto/create-blogger.dto';

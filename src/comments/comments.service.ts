@@ -3,7 +3,7 @@ import { CommentsRepository } from './comments.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from 'src/schemas/comment.schema';
-import { CustomResponseType } from 'src/types';
+import { CustomResponseType } from 'src/main/types';
 import { FilterDto } from 'src/dto/filter.dto';
 
 @Injectable()
@@ -22,22 +22,25 @@ export class CommentsService {
       addedAt: new Date().toISOString(),
     };
 
-    return this.commentsRepository.createComment(newComment)
+    return this.commentsRepository.createComment(newComment);
   }
 
-  async getPostComments(id: string,filterDto: FilterDto) :Promise<CustomResponseType>{
-    return this.commentsRepository.getPostComments(id,filterDto)
+  async getPostComments(
+    id: string,
+    filterDto: FilterDto,
+  ): Promise<CustomResponseType> {
+    return this.commentsRepository.getPostComments(id, filterDto);
   }
 
-  async getCommentById(id:string){
-      return this.commentsRepository.getCommentById(id)
+  async getCommentById(id: string) {
+    return this.commentsRepository.getCommentById(id);
   }
 
-  async updateComment(id: string,updateCommentDto: UpdateCommentDto){
-      return this.commentsRepository.updateComment(id,updateCommentDto)
+  async updateComment(id: string, updateCommentDto: UpdateCommentDto) {
+    return this.commentsRepository.updateComment(id, updateCommentDto);
   }
 
-  async deleteComment(id: string):Promise<boolean>{
-      return this.commentsRepository.deleteComment(id)
+  async deleteComment(id: string): Promise<boolean> {
+    return this.commentsRepository.deleteComment(id);
   }
 }
