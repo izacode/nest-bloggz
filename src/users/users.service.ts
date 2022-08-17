@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Types} from "mongoose";
+import mongoose from "mongoose";
+// import { Types} from "mongoose";
 import { FilterDto } from "src/dto/filter.dto";
 import { UsersRepository } from "./users.repository";
 
@@ -12,8 +13,8 @@ export class UsersService{
     }
 
     async deleteUser(id: string) {
-        debugger
-        const _id = new Types.ObjectId(id)
+
+        const _id = new mongoose.Types.ObjectId(id)
         return this.usersRepository.deleteUser(_id);
     }
 

@@ -3,7 +3,7 @@ import { CommentsRepository } from './comments.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from 'src/schemas/comment.schema';
-import { CustomResponseType } from 'src/main/types';
+import { CustomResponseType } from 'src/types';
 import { FilterDto } from 'src/dto/filter.dto';
 
 @Injectable()

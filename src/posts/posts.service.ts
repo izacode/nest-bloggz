@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FilterDto } from 'src/dto/filter.dto';
-import { CustomResponseType } from 'src/main/types';
+import { CustomResponseType } from 'src/types';
 import { Post } from 'src/schemas/post.schema';
 
 import { CreatePostDto } from './dto/create-post.dto';

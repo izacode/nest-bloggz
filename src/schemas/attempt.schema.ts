@@ -1,8 +1,9 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
+@Schema()
 export class Attempt extends Document {
-    @Prop()
+  @Prop()
   ip: string;
   @Prop()
   attemptDate: Date;
@@ -10,4 +11,4 @@ export class Attempt extends Document {
   url: string;
 }
 
-export const AttemptSchema = SchemaFactory.createForClass(Attempt)
+export const AttemptSchema = SchemaFactory.createForClass(Attempt);

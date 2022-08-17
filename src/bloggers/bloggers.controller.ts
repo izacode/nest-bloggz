@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Blogger } from 'src/schemas/blogger.schema';
-import { CustomResponseType } from 'src/main/types';
+import { CustomResponseType } from 'src/types';
 import { BloggersService } from './bloggers.service';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
 import { FilterDto } from '../dto/filter.dto';

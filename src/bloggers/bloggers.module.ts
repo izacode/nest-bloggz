@@ -1,11 +1,6 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CommentsController } from 'src/comments/comments.controller';
-import { CommentsRepository } from 'src/comments/comments.repository';
-import { CommentsService } from 'src/comments/comments.service';
-import { PostsController } from 'src/posts/posts.controller';
-import { PostsRepository } from 'src/posts/posts.repository';
-import { PostsService } from 'src/posts/posts.service';
+import { PostsModule } from 'src/posts/posts.module';
 import { Blogger, BloggerSchema } from 'src/schemas/blogger.schema';
 import { Comment, CommentSchema } from 'src/schemas/comment.schema';
 import { Post, PostSchema } from 'src/schemas/post.schema';
@@ -15,6 +10,8 @@ import { BloggersService } from './bloggers.service';
 
 @Module({
   imports: [
+    forwardRef(() => PostsModule),
+
     MongooseModule.forFeature([
       {
         name: Post.name,
@@ -30,14 +27,11 @@ import { BloggersService } from './bloggers.service';
       },
     ]),
   ],
-  controllers: [CommentsController, PostsController, BloggersController],
+  controllers: [BloggersController],
   providers: [
-    CommentsService,
-    CommentsRepository,
-    PostsService,
-    PostsRepository,
     BloggersService,
     BloggersRepository,
   ],
+  exports: [BloggersService, BloggersRepository],
 })
 export class BloggersModule {}

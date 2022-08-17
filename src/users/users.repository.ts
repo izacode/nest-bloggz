@@ -1,18 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { ObjectId } from 'mongodb';
+
 import { FilterDto } from 'src/dto/filter.dto';
-import { CustomResponseType } from 'src/main/types';
+import { CustomResponseType } from 'src/types';
 import { Attempt } from 'src/schemas/attempt.schema';
 import { User } from 'src/schemas/user.schema';
 
 @Injectable()
 export class UsersRepository {
   @InjectModel(User.name) private userModel: Model<User>;
-  @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
+  // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
 
   async checkTokenList(refreshToken: string, _id: string): Promise<Boolean> {
-    const doc = await this.userModel.findById({ _id: new Types.ObjectId(_id) });
+    const doc = await this.userModel.findById({ _id: new ObjectId(_id) });
 
     if (!doc) return false;
 
@@ -47,31 +49,31 @@ export class UsersRepository {
     };
     return customResponse;
   }
-  async createUser(user: User): Promise<User | null> {
+  async createUser(user: any): Promise<any> {
     await this.userModel.create(user);
     const createdUser = await this.userModel.findOne({ _id: user._id });
     return createdUser;
   }
-  async findUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+  async findUserByLoginOrEmail(login: string, email:string): Promise<User | null> {
     const user = await this.userModel
       .findOne({
         $or: [
-          { 'accountData.userName': loginOrEmail },
-          { 'accountData.email': loginOrEmail },
+          { 'accountData.userName': login },
+          { 'accountData.email': email },
         ],
       })
       .exec();
-       if (!user) throw new NotFoundException();
+    if (!user) throw new NotFoundException();
     return user;
   }
   async findUserByLogin(login: string): Promise<User | null> {
     const user = await this.userModel.findOne({ login });
-     if (!user) throw new NotFoundException();
+    if (!user) throw new NotFoundException();
     return user;
   }
   async findUserById(_id: ObjectId): Promise<User | null> {
     const user = await this.userModel.findOne({ _id });
-    if(!user) throw new NotFoundException()
+    if (!user) throw new NotFoundException();
     return user;
   }
   async findUserByConfirmationCode(code: string): Promise<User | null> {
@@ -81,7 +83,6 @@ export class UsersRepository {
     return user;
   }
   async updateConfirmationStatus(_id: ObjectId): Promise<boolean> {
-
     const result = await this.userModel.updateOne(
       { _id },
       { $set: { 'emailConfirmation.isConfirmed': true } },
@@ -107,7 +108,12 @@ export class UsersRepository {
     await doc.save();
     return true;
   }
-  async deleteUser(_id): Promise<boolean> {
+  async deleteUser(_id: ObjectId): Promise<boolean> {
+    try {
+      await this.findUserById(_id);
+    } catch (error) {
+      console.log(error.message);
+    }
     const isDeleted = await this.userModel.deleteOne({ _id });
     return isDeleted.deletedCount === 1;
   }
@@ -125,12 +131,12 @@ export class UsersRepository {
   }
 
   // Ips and requests================================================================
-  async deleteAllIps() {
-    await this.attemptModel.deleteMany({});
-    const totalCount: number = await this.attemptModel.countDocuments({});
-    if (totalCount !== 0) return false;
-    return true;
-  }
+  // async deleteAllIps() {
+  //   await this.attemptModel.deleteMany({});
+  //   const totalCount: number = await this.attemptModel.countDocuments({});
+  //   if (totalCount !== 0) return false;
+  //   return true;
+  // }
   // async deleteAllRequests() {
   //   await requestsCollection.deleteMany({});
   //   const totalCount: number = await requestsCollection.countDocuments({});
