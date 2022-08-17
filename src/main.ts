@@ -1,4 +1,4 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ParseUUIDPipe, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { HttpExceptionFilter } from 'src/exception.filter';
 import { AppModule } from './app.module';
@@ -30,6 +30,7 @@ async function bootstrap() {
         throw new BadRequestException(errorsForResponse);
       },
     }),
+    new ParseUUIDPipe()
   );
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(5000);

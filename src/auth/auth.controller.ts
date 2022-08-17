@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode,ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
@@ -15,11 +15,13 @@ export class AuthController {
 
   @HttpCode(204)
   @Post('/registration-confirmation')
-  async confirmRegistration(@Body('code') code: string) {
+  async confirmRegistration(@Body('code', ParseUUIDPipe) code: string) {
     return this.authService.confirmEmail(code)
   }
 
   @UseGuards(AuthGuard('local'))
   @Post('/login')
   async login() {}
+
+
 }
