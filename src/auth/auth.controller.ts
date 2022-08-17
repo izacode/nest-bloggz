@@ -11,7 +11,12 @@ export class AuthController {
   @Post('/registration')
   async registerUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.createUser(createUserDto);
-    
+  }
+
+  @HttpCode(204)
+  @Post('/registration-confirmation')
+  async confirmRegistration(@Body('code') code: string) {
+    return this.authService.confirmEmail(code)
   }
 
   @UseGuards(AuthGuard('local'))

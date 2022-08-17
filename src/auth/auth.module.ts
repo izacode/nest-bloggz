@@ -36,6 +36,8 @@ import { Attempt, AttemptSchema } from 'src/schemas/attempt.schema';
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AttemptsMiddleware).forRoutes('auth/registration');
+    consumer
+      .apply(AttemptsMiddleware)
+      .forRoutes('auth/registration', 'auth/registration-confirmation');
   }
 }

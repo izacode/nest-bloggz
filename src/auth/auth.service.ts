@@ -2,7 +2,6 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as datefns from 'date-fns';
-// import add from 'date-fns/add';
 import { ObjectId } from 'mongodb';
 
 import { User } from 'src/schemas/user.schema';
@@ -58,8 +57,6 @@ export class AuthService {
   }
 
   async _generateHash(password: string) {
-    
- 
     const hashh = await bcrypt.hash(password, 10);
     return hashh;
   }
@@ -79,5 +76,17 @@ export class AuthService {
   async _isPasswordCorrect(password: string, hash: string) {
     const isCorrect = await bcrypt.compare(password, hash);
     return isCorrect;
+  }
+
+  async confirmEmail(code: string): Promise<boolean> {
+    const user: User =
+      await this.usersRepository.findUserByConfirmationCode(code);
+    if (!user) return false;
+    // if (user.emailConfirmation.isConfirmed) return false;
+    if (user.emailConfirmation.expirationDate < new Date()) return false;
+    let result: boolean = await this.usersRepository.updateConfirmationStatus(
+      user._id,
+    );
+    return result;
   }
 }
