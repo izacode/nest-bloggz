@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ObjectId } from 'mongodb';
@@ -13,20 +13,19 @@ export class UsersRepository {
   @InjectModel(User.name) private userModel: Model<User>;
   // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
 
-  async checkTokenList(refreshToken: string, _id: string): Promise<Boolean> {
+  async checkRevokedTokensList(refreshToken: string, _id: string): Promise<Boolean> {
     const doc = await this.userModel.findById({ _id: new ObjectId(_id) });
 
-    if (!doc) return false;
+    if (!doc) throw new UnauthorizedException();
 
     return doc.accountData.revokedRefreshTokens.includes(refreshToken);
   }
-  async updateTokenList(refreshToken: string, _id: string): Promise<Boolean> {
-    const doc = await this.userModel.findById({ _id: new Types.ObjectId(_id) });
-    if (!doc) return false;
+  async updateRevokedTokensList(refreshToken: string, id: string): Promise<Boolean> {
+    const doc = await this.userModel.findById({ _id: new ObjectId(id) });
+    if (!doc) throw new UnauthorizedException();
     doc.accountData.revokedRefreshTokens.push(refreshToken);
     await doc.save();
-
-    return true;
+    return;
   }
   async getUsers(filterDto: FilterDto): Promise<CustomResponseType> {
     const { PageNumber = 1, PageSize = 10 } = filterDto;
@@ -54,34 +53,45 @@ export class UsersRepository {
     const createdUser = await this.userModel.findOne({ _id: user._id });
     return createdUser;
   }
-  async findUserByLoginOrEmail(login: string, email:string): Promise<User | null> {
-    const user = await this.userModel
-      .findOne({
-        $or: [
-          { 'accountData.userName': login },
-          { 'accountData.email': email },
-        ],
-      })
-      .exec();
-    if (!user) throw new NotFoundException();
-    return user;
-  }
+  // async findUserByLoginOrEmail(login: string, email: string): Promise<User> {
+  //   const user = await this.userModel
+  //     .findOne({
+  //       $or: [
+  //         { 'accountData.userName': login },
+  //         { 'accountData.email': email },
+  //       ],
+  //     })
+  //     .exec();
+  //   if (!user) throw new NotFoundException();
+  //   return user;
+  // }
   async findUserByLogin(login: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ login });
+    const user = await this.userModel.findOne({
+      'accountData.userName': login,
+    });
+    if (!user) return null;
+    return user;
+  }
+
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ 'accountData.email': email });
     if (!user) throw new NotFoundException();
     return user;
   }
-  async findUserById(_id: ObjectId): Promise<User | null> {
+
+  async getUserById(_id: ObjectId): Promise<User | null> {
     const user = await this.userModel.findOne({ _id });
     if (!user) throw new NotFoundException();
     return user;
   }
+
   async findUserByConfirmationCode(code: string): Promise<User | null> {
     const user = await this.userModel.findOne({
       'emailConfirmation.confirmationCode': code,
     });
     return user;
   }
+
   async updateConfirmationStatus(_id: ObjectId): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { _id },
@@ -101,28 +111,31 @@ export class UsersRepository {
     );
     return result.matchedCount === 1;
   }
+
   async updateSentEmails(_id: ObjectId): Promise<boolean> {
     const doc = await this.userModel.findById({ _id });
-    if (!doc) return false;
     doc.emailConfirmation.sentEmails.push({ sentDate: new Date() });
     await doc.save();
     return true;
   }
+
   async deleteUser(_id: ObjectId): Promise<boolean> {
     try {
-      await this.findUserById(_id);
+      await this.getUserById(_id);
     } catch (error) {
       console.log(error.message);
     }
     const isDeleted = await this.userModel.deleteOne({ _id });
     return isDeleted.deletedCount === 1;
   }
+
   async deleteAllUsers() {
     await this.userModel.deleteMany({});
     const totalCount: number = await this.userModel.countDocuments({});
     if (totalCount !== 0) return false;
     return true;
   }
+
   async deleteAllUsersAccount() {
     await this.userModel.deleteMany({});
     const totalCount: number = await this.userModel.countDocuments({});

@@ -20,12 +20,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         errors: [],
       };
       const responseBody: any = exception.getResponse();
+      // if (responseBody.message === 'Validation failed (uuid is expected)') {
       if (responseBody.message === 'Validation failed (uuid is expected)') {
         errorResponse.errors.push({
           message: 'Validation failed (uuid is expected)',
           field: 'code',
         });
       } else {
+        
         responseBody.message.forEach((m) => {
           let isFieldExists = errorResponse.errors.find(
             (mes) => mes.field === m.field,

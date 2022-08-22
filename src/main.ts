@@ -1,17 +1,16 @@
-import { BadRequestException, ParseUUIDPipe, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { HttpExceptionFilter } from 'src/exception.filter';
 import { AppModule } from './app.module';
-import 'dotenv/config'; 
-
-
+import * as cookieParser from 'cookie-parser';
 
 
 
 async function bootstrap() {
-  debugger;
+ 
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       // stopAtFirstError: true,
@@ -30,7 +29,6 @@ async function bootstrap() {
         throw new BadRequestException(errorsForResponse);
       },
     }),
-    new ParseUUIDPipe()
   );
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(5000);

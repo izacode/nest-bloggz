@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { User } from "src/schemas/user.schema";
 import { EmailManager } from "./email.manager";
 
 
@@ -10,10 +11,6 @@ export class EmailService {
     return result;
   }
   async sendEmailConfirmationMassage(user) {
-    const result = await this.emailManager.sendEmailConfirmationMassage(user);
-    return result;
-  }
-  async resendEmailConfirmationMassage(user) {
     const result = await this.emailManager.sendEmailConfirmationMassage(user);
     return result;
   }

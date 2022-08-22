@@ -8,8 +8,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
-    const isDeleted  =  await this.usersService.deleteUser(id);
-
-    return isDeleted
+    await this.usersService.deleteUser(id);
+    return
   }
 }

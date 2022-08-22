@@ -12,7 +12,6 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      
     }),
     AuthModule,
     BloggersModule,
@@ -20,9 +19,9 @@ import { UsersModule } from './users/users.module';
     CommentsModule,
     UsersModule,
     MongooseModule.forRoot(
-      // `mongodb+srv://thug:${await this.confi}@clusterblogg.gub0i.mongodb.net`,
-      'mongodb+srv://thug:test1234@clusterblogg.gub0i.mongodb.net',
-    )
+      `mongodb+srv://thug:${process.env.MONGO_PASSWORD}@clusterblogg.gub0i.mongodb.net`,
+      // 'mongodb+srv://thug:test1234@clusterblogg.gub0i.mongodb.net',
+    ),
   ],
 })
 export class AppModule {}

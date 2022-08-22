@@ -1,5 +1,6 @@
 // import { UserAccountDBType } from '../types/types';
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/schemas/user.schema';
 import { EmailAdapter } from './email.adapter';
 
 @Injectable()
@@ -12,12 +13,20 @@ export class EmailManager {
     const info = await this.emailAdapter.sendEmail(email, subject, message);
     return info;
   }
-  async sendEmailConfirmationMassage(user) {
-    const subject: string = 'This is email confirmation message';
-    const message: string = `<H1> Please confirm your email <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>confirm email <a/><H1/>`;
+  async sendEmailConfirmationMassage(user: User) {
+    // 1) Destructure email and confirmaitonCode from user
+    let {
+      emailConfirmation: { confirmationCode },
+      accountData: { email },
+    } = user;
 
+    // 2) Create subject and message for Confifmation email
+    const subject: string = 'This is email confirmation message';
+    const message: string = `<H1> Please confirm your email <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>confirm email <a/><H1/>`;
+
+    //  3) Pass it to emailAdapter(Nodemailer)
     const result = await this.emailAdapter.sendEmail(
-      user.accountData.email,
+      email,
       subject,
       message,
     );

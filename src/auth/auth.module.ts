@@ -10,6 +10,14 @@ import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { AttemptsMiddleware } from 'src/middleware/attempts.middleware';
 import { Attempt, AttemptSchema } from 'src/schemas/attempt.schema';
+import { LocalStrategy } from './strategies/local.strategy';
+// import { JwtService } from 'src/application/jwt.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+
+
 
 @Module({
   imports: [
@@ -23,21 +31,31 @@ import { Attempt, AttemptSchema } from 'src/schemas/attempt.schema';
         schema: AttemptSchema,
       },
     ]),
+    PassportModule,
+    JwtModule
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
     EmailService,
     UsersRepository,
+    UsersService,
     EmailManager,
     EmailAdapter,
     ConfigService,
+    LocalStrategy,
+    JwtStrategy,
   ],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AttemptsMiddleware)
-      .forRoutes('auth/registration', 'auth/registration-confirmation');
+      .forRoutes(
+        'auth/login',
+        'auth/registration',
+        'auth/registration-confirmation',
+        'auth/registration-email-resending',
+      );
   }
 }
