@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { Blogger } from 'src/schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
@@ -17,11 +18,14 @@ import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
 import { CreatePostDto } from 'src/posts/dto/create-post.dto';
 import { PostsService } from 'src/posts/posts.service';
+import { BasicAuthGuard } from 'src/auth/guards/basic-auth-guard';
 
 @Controller('bloggers')
 export class BloggersController {
-  
-  constructor(protected bloggersService: BloggersService, private postsService: PostsService) {}
+  constructor(
+    protected bloggersService: BloggersService,
+    private postsService: PostsService,
+  ) {}
 
   @Get()
   async getBloggers(
@@ -29,7 +33,7 @@ export class BloggersController {
   ): Promise<CustomResponseType> {
     return this.bloggersService.getBloggers(filterDto);
   }
-
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createBlogger(@Body() createBloggerDto: CreateBloggerDto) {
     const newBlogger: Blogger = await this.bloggersService.createBlogger(
@@ -43,6 +47,8 @@ export class BloggersController {
     const foundBlogger: Blogger = await this.bloggersService.getBlogger(id);
     return foundBlogger;
   }
+
+  @UseGuards(BasicAuthGuard)
   @Put('/:id')
   @HttpCode(204)
   async updateBlogger(
@@ -56,6 +62,8 @@ export class BloggersController {
     );
     return isUpdated;
   }
+
+  @UseGuards(BasicAuthGuard)
   @Delete('/:id')
   //   @HttpCode(204)
   async deleteBlogger(@Param('id') id: string) {
@@ -63,6 +71,7 @@ export class BloggersController {
     const isDeleted: boolean = await this.bloggersService.deleteBlogger(id);
     return isDeleted;
   }
+
   @Delete()
   @HttpCode(204)
   async deleteAllBloggers() {
@@ -81,13 +90,14 @@ export class BloggersController {
     );
     return bloggerPosts;
   }
-
+  @UseGuards(BasicAuthGuard)
   @Post('/:id/posts')
-  async createBloggerPost(@Param('id') id: string, @Body()createPostDto: CreatePostDto) {
+  async createBloggerPost(
+    @Param('id') id: string,
+    @Body() createPostDto: CreatePostDto,
+  ) {
+    const newPost = await this.postsService.createPost(createPostDto, id);
 
-    const newPost = await this.postsService.createPost(createPostDto,id);
-
-    return newPost
+    return newPost;
   }
-}  
-
+}

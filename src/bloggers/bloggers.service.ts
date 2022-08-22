@@ -26,7 +26,6 @@ export class BloggersService {
       name,
       youtubeUrl,
     };
-    debugger
 
     return this.bloggersRepository.createBlogger(newBlogger);
   }
