@@ -18,8 +18,6 @@ import { UsersService } from 'src/users/users.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { BasicStrategy } from './strategies/basic.strategy';
 
-
-
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -33,7 +31,7 @@ import { BasicStrategy } from './strategies/basic.strategy';
       },
     ]),
     PassportModule,
-    JwtModule
+    JwtModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -46,7 +44,7 @@ import { BasicStrategy } from './strategies/basic.strategy';
     ConfigService,
     LocalStrategy,
     JwtStrategy,
-    BasicStrategy
+    BasicStrategy,
   ],
 })
 export class AuthModule {

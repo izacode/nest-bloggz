@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, UseGuards,Headers } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { CurrentUserData } from 'src/common/current-user-data.param.decorator';
+import { LikeStatusDto } from 'src/dto/like-status.dto';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
@@ -7,22 +10,46 @@ export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
   @Get('/:id')
-  async getCommentById(@Param('id') id: string) {
-    const comment = await this.commentsService.getCommentById(id)
-    return comment
+  async getCommentById(
+    @Headers() headers: any,
+    @Param('id') id: string,
+  ) {
+    const comment = await this.commentsService.getCommentById(id, headers);
+    return comment;
   }
 
-  @Put("/:id")
-  async updateComment(@Param("id")id:string, @Body() updateCommentDto: UpdateCommentDto) {
-    const isUpdated = await this.commentsService.updateComment(id,updateCommentDto)
-    return isUpdated
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  async updateComment(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    const isUpdated = await this.commentsService.updateComment(
+      id,
+      updateCommentDto,
+    );
+    return isUpdated;
   }
 
-  @Delete("/:id")
-  async deleteComment(@Param("id")id: string){
-    const isDeleted = await this.commentsService.deleteComment(id)
-    return isDeleted
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  async deleteComment(@Param('id') id: string) {
+    const isDeleted = await this.commentsService.deleteComment(id);
+    return isDeleted;
   }
 
-  
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id/like-status')
+  async reactOnComment(
+    @Param('id') id: string,
+    @Body() likeStatusDto: LikeStatusDto,
+    @CurrentUserData() currentUserData: any,
+  ) {
+    await this.commentsService.reactOnComment(
+      id,
+      likeStatusDto,
+      currentUserData,
+    );
+    return
+  }
 }

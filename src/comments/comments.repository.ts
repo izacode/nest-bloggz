@@ -5,16 +5,35 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from 'src/schemas/comment.schema';
 import { FilterDto } from 'src/dto/filter.dto';
 import { CustomResponseType } from 'src/types';
+import { ReactionsRepository } from 'src/likes/reactions.repository';
 
 @Injectable()
 export class CommentsRepository {
   constructor(
+    private reactionsRepository: ReactionsRepository,
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
   ) {}
 
-  async getCommentById(id: string): Promise<Comment> {
-    const comment = await this.commentModel.findOne({ id }, '-__v');
+  async getCommentById(id: string, userInfo?: any): Promise<Comment> {
+  
+    let comment = await this.commentModel.findOne({ id }, '-__v');
     if (!comment) throw new NotFoundException();
+    if (
+      !userInfo ||
+      !(await this.reactionsRepository.getUsersAllCommentsReactions(
+        userInfo.sub,
+      ))
+    ) {
+      comment.likesInfo.myStatus = 'None';
+    } else {
+      const userCommentReaction =
+        await this.reactionsRepository.getUsersCommentReaction(
+          id,
+          userInfo.sub,
+        );
+
+      comment.likesInfo.myStatus = userCommentReaction.likeStatus;
+    }
     return comment;
   }
 
@@ -26,13 +45,48 @@ export class CommentsRepository {
   async getPostComments(
     id: string,
     filterDto: FilterDto,
+    userInfo?: any,
   ): Promise<CustomResponseType> {
     const { PageNumber, PageSize } = filterDto;
-    const postComments: Comment[] = await this.commentModel
-      .find({ postId: id }, '-_id -__v')
-      .skip((+PageNumber - 1) * +PageSize)
-      .limit(+PageSize)
-      .exec();
+    console.log(userInfo);
+
+    let postComments: Comment[];
+    if (
+      !userInfo ||
+      !(await this.reactionsRepository.getUsersAllCommentsReactions(
+        userInfo.sub,
+      ))
+    ) {
+      postComments = await this.commentModel
+        .find({ postId: id }, '-_id -__v -likesInfo._id')
+        .skip((+PageNumber - 1) * +PageSize)
+        .limit(+PageSize)
+        .exec();
+
+      if (postComments.length !== 0) {
+        postComments.map((c) => (c.likesInfo.myStatus = 'None'));
+      }
+    } else {
+      const userCommentsReactions =
+        await this.reactionsRepository.getUsersAllCommentsReactions(
+          userInfo.sub,
+        );
+
+      postComments = (
+        await this.commentModel
+          .find({ postId: id }, '-_id -__v -likesInfo._id')
+          .skip((+PageNumber - 1) * +PageSize)
+          .limit(+PageSize)
+          .exec()
+      ).map((c) => {
+        userCommentsReactions.forEach((r) => {
+          if (r.commentId === c.id)
+            return (c.likesInfo.myStatus = r.likeStatus);
+        });
+        // c.likesInfo.myStatus = 'None';
+        return c;
+      });
+    }
 
     const totalCount: number = await this.commentModel.countDocuments({
       postId: id,

@@ -17,6 +17,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailDto } from 'src/dto/email.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
     private emailService: EmailService,
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
@@ -154,7 +156,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    // if (!result) 
+    // if (!result)
 
     const isRevoked = await this.usersRepository.checkRevokedTokensList(
       token,
@@ -164,4 +166,7 @@ export class AuthService {
 
     return result;
   }
+
+
+    
 }

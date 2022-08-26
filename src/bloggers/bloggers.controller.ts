@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { Blogger } from 'src/schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
@@ -33,6 +34,7 @@ export class BloggersController {
   ): Promise<CustomResponseType> {
     return this.bloggersService.getBloggers(filterDto);
   }
+
   @UseGuards(BasicAuthGuard)
   @Post()
   async createBlogger(@Body() createBloggerDto: CreateBloggerDto) {
@@ -60,7 +62,7 @@ export class BloggersController {
       id,
       updateBloggerDto,
     );
-    return isUpdated;
+    return;
   }
 
   @UseGuards(BasicAuthGuard)
@@ -69,7 +71,7 @@ export class BloggersController {
   async deleteBlogger(@Param('id') id: string) {
     await this.bloggersService.getBlogger(id);
     const isDeleted: boolean = await this.bloggersService.deleteBlogger(id);
-    return isDeleted;
+    return;
   }
 
   @Delete()
@@ -83,15 +85,14 @@ export class BloggersController {
   async getBloggerPosts(
     @Param('id') id: string,
     @Query() filterDto: FilterDto,
+    @Headers() headers: any,
   ) {
-    const bloggerPosts = await this.postsService.getAllBloggerPosts(
-      id,
-      filterDto,
-    );
+    const bloggerPosts = await this.postsService.getPosts(filterDto, headers, id);
     return bloggerPosts;
   }
   @UseGuards(BasicAuthGuard)
   @Post('/:id/posts')
+  @HttpCode(204)
   async createBloggerPost(
     @Param('id') id: string,
     @Body() createPostDto: CreatePostDto,

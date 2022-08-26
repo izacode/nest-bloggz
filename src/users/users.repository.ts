@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ObjectId } from 'mongodb';
@@ -13,14 +17,20 @@ export class UsersRepository {
   @InjectModel(User.name) private userModel: Model<User>;
   // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
 
-  async checkRevokedTokensList(refreshToken: string, _id: string): Promise<Boolean> {
+  async checkRevokedTokensList(
+    refreshToken: string,
+    _id: string,
+  ): Promise<Boolean> {
     const doc = await this.userModel.findById({ _id: new ObjectId(_id) });
 
     if (!doc) throw new UnauthorizedException();
 
     return doc.accountData.revokedRefreshTokens.includes(refreshToken);
   }
-  async updateRevokedTokensList(refreshToken: string, id: string): Promise<Boolean> {
+  async updateRevokedTokensList(
+    refreshToken: string,
+    id: string,
+  ): Promise<Boolean> {
     const doc = await this.userModel.findById({ _id: new ObjectId(id) });
     if (!doc) throw new UnauthorizedException();
     doc.accountData.revokedRefreshTokens.push(refreshToken);
@@ -30,7 +40,8 @@ export class UsersRepository {
   async getUsers(filterDto: FilterDto): Promise<CustomResponseType> {
     const { PageNumber = 1, PageSize = 10 } = filterDto;
     const users = await this.userModel
-      .find({}, '-_id -passwordHash -passwordSalt')
+      .find({}, {_id: 0, 'accountData.userName': 1, 'accountData.email': 1 })
+      // .find({}, '-_id -accountData.passwordHash -passwordSalt -__v')
       //   .find({}, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0 } })
       .skip((+PageNumber - 1) * +PageSize)
       .limit(+PageSize)

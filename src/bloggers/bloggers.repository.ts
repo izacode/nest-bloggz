@@ -18,7 +18,7 @@ export class BloggersRepository {
   async getBloggers(filterDto: FilterDto): Promise<CustomResponseType> {
     const { SearchNameTerm, PageNumber = 1, PageSize = 10 } = filterDto;
     let filter =
-      SearchNameTerm === undefined ? {} : { name: { $regex: SearchNameTerm } };
+      SearchNameTerm === null ? {} : { name: { $regex: SearchNameTerm } };
     const bloggers: Blogger[] = await this.bloggerModel
       .find(filter, '-_id -__v')
       .skip((+PageNumber - 1) * +PageSize)

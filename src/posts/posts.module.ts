@@ -9,6 +9,11 @@ import { PostsController } from './posts.controller';
 import { PostsRepository } from './posts.repository';
 import { PostsService } from './posts.service';
 import { forwardRef} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ReactionsRepository } from 'src/likes/reactions.repository';
+import { CommentReaction, CommentReactionSchema } from 'src/schemas/comment-reaction.schema';
+import { PostReaction, PostReactionSchema } from 'src/schemas/post-reaction.schema';
+import { ReactionsService } from 'src/likes/reactions.service';
 
 @Module({
   imports: [
@@ -27,10 +32,24 @@ import { forwardRef} from '@nestjs/common';
         name: Comment.name,
         schema: CommentSchema,
       },
+      {
+        name: CommentReaction.name,
+        schema: CommentReactionSchema,
+      },
+      {
+        name: PostReaction.name,
+        schema: PostReactionSchema,
+      },
     ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService, PostsRepository],
+  providers: [
+    PostsService,
+    PostsRepository,
+    JwtService,
+    ReactionsRepository,
+    ReactionsService,
+  ],
   exports: [PostsService, PostsRepository],
 })
 export class PostsModule {}
