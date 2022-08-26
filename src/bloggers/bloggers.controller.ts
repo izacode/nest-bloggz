@@ -67,7 +67,7 @@ export class BloggersController {
 
   @UseGuards(BasicAuthGuard)
   @Delete('/:id')
-  //   @HttpCode(204)
+  @HttpCode(204)
   async deleteBlogger(@Param('id') id: string) {
     await this.bloggersService.getBlogger(id);
     const isDeleted: boolean = await this.bloggersService.deleteBlogger(id);

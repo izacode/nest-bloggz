@@ -8,6 +8,8 @@ import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { UsersModule } from './users/users.module';
 
+import { TestingClearModule } from './testing/testing-clear.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,6 +20,7 @@ import { UsersModule } from './users/users.module';
     PostsModule,
     CommentsModule,
     UsersModule,
+    TestingClearModule,
     MongooseModule.forRoot(
       `mongodb+srv://thug:${process.env.MONGO_PASSWORD}@clusterblogg.gub0i.mongodb.net`,
       // 'mongodb+srv://thug:test1234@clusterblogg.gub0i.mongodb.net',
