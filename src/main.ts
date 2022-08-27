@@ -5,6 +5,8 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { HttpExceptionFilter } from './exception.filter';
 
+const PORT = `${process.env.PORT}` || 5000
+
 
 
 async function bootstrap() {
