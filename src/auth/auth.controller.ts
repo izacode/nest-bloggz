@@ -75,11 +75,11 @@ export class AuthController {
       await this.config.get('JWT_REFRESH_EXPIRATION'),
     );
 
-    response.cookie('refreshToken', refreshToken);
-    // response.cookie('refreshToken', refreshToken, {
-    //   httpOnly: true,
-    //   secure: true,
-    // });
+    // response.cookie('refreshToken', refreshToken);
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
 
     return { accessToken, refreshToken };
   }
@@ -119,8 +119,8 @@ export class AuthController {
     );
 
     response.cookie('refreshToken', newRefreshToken, {
-      //  httpOnly: true,
-      //  secure: true,
+       httpOnly: true,
+       secure: true,
     });
 
     return { accessToken };
