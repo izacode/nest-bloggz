@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommentReaction } from 'src/schemas/comment-reaction.schema';
-import { PostReaction } from 'src/schemas/post-reaction.schema';
+import { CommentReaction } from '../schemas/comment-reaction.schema';
+import { PostReaction } from '../schemas/post-reaction.schema';
 
 @Injectable()
 export class ReactionsRepository {
@@ -93,12 +93,11 @@ export class ReactionsRepository {
     return userPostReaction;
   }
 
-  async getUserAllPostsReactions(id: string){
-     const userAllPostsReactions: PostReaction[] | null =
-       await this.postReactionModel.find({ userId: id }, '-_id -__v');
+  async getUserAllPostsReactions(id: string) {
+    const userAllPostsReactions: PostReaction[] | null =
+      await this.postReactionModel.find({ userId: id }, '-_id -__v');
 
-      if (!userAllPostsReactions) return null;
-      return userAllPostsReactions;  
-
+    if (!userAllPostsReactions) return null;
+    return userAllPostsReactions;
   }
 }

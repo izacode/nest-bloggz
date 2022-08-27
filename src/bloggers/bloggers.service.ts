@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CustomResponseType } from 'src/types';
+import { CustomResponseType } from '../types';
 
 import { BloggersRepository } from './bloggers.repository';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
@@ -12,14 +12,12 @@ import { validateOrReject } from 'class-validator';
 export class BloggersService {
   constructor(protected bloggersRepository: BloggersRepository) {}
 
-  async getBloggers(
-    filterDto: FilterDto,
-  ): Promise<CustomResponseType> {
+  async getBloggers(filterDto: FilterDto): Promise<CustomResponseType> {
     return this.bloggersRepository.getBloggers(filterDto);
   }
 
   async createBlogger(createBloggerDto: CreateBloggerDto) {
-    await validateOrReject(createBloggerDto)
+    await validateOrReject(createBloggerDto);
     const { name, youtubeUrl } = createBloggerDto;
     const newBlogger = {
       id: (+new Date()).toString(),
@@ -40,12 +38,11 @@ export class BloggersService {
     return this.bloggersRepository.updateBlogger(id, updateBloggerDto);
   }
 
-  async deleteBlogger(id:string): Promise<boolean>{
-    return this.bloggersRepository.deleteBlogger(id)
+  async deleteBlogger(id: string): Promise<boolean> {
+    return this.bloggersRepository.deleteBlogger(id);
   }
 
-  async deleteAllBloggers():Promise<boolean>{
-    return this.bloggersRepository.deleteAllBloggers()
+  async deleteAllBloggers(): Promise<boolean> {
+    return this.bloggersRepository.deleteAllBloggers();
   }
-
 }

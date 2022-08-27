@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FilterDto } from 'src/dto/filter.dto';
-import { CustomResponseType } from 'src/types';
-import { ExtendedLikesInfo, Post } from 'src/schemas/post.schema';
+import { FilterDto } from '../dto/filter.dto';
+
+import { ExtendedLikesInfo, Post } from '../schemas/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
-import { BloggersRepository } from 'src/bloggers/bloggers.repository';
-import { Blogger } from 'src/schemas/blogger.schema';
+import { BloggersRepository } from '../bloggers/bloggers.repository';
+import { Blogger } from '../schemas/blogger.schema';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { LikeStatusDto } from 'src/dto/like-status.dto';
-import { ReactionsRepository } from 'src/likes/reactions.repository';
-import { ReactionsService } from 'src/likes/reactions.service';
+import { LikeStatusDto } from '../dto/like-status.dto';
+import { ReactionsRepository } from '../likes/reactions.repository';
+import { ReactionsService } from '../likes/reactions.service';
 
 @Injectable()
 export class PostsService {
@@ -34,7 +34,7 @@ export class PostsService {
 
       return this.postsRepository.getPosts(filterDto, userInfo, bloggerId);
     } catch {
-      return this.postsRepository.getPosts(filterDto, null,  bloggerId);
+      return this.postsRepository.getPosts(filterDto, null, bloggerId);
     }
   }
 

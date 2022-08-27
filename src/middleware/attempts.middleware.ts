@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { Attempt } from 'src/schemas/attempt.schema';
+import { Attempt } from '../schemas/attempt.schema';
 import * as datefns from 'date-fns';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -17,7 +17,7 @@ export class AttemptsMiddleware implements NestMiddleware {
       attemptDate,
       url,
     } as Attempt;
-   
+
     try {
       await this.attemptModel.create(attempt);
     } catch (e) {

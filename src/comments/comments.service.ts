@@ -2,14 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from 'src/schemas/comment.schema';
-import { CustomResponseType } from 'src/types';
-import { FilterDto } from 'src/dto/filter.dto';
-import { LikeStatusDto } from 'src/dto/like-status.dto';
+import { Comment } from '../schemas/comment.schema';
+import { CustomResponseType } from '../types';
+import { FilterDto } from '../dto/filter.dto';
+import { LikeStatusDto } from '../dto/like-status.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ReactionsRepository } from 'src/likes/reactions.repository';
-import { ReactionsService } from 'src/likes/reactions.service';
+import { ReactionsRepository } from '../likes/reactions.repository';
+import { ReactionsService } from '../likes/reactions.service';
 
 @Injectable()
 export class CommentsService {
@@ -65,7 +65,6 @@ export class CommentsService {
   }
 
   async getCommentById(id: string, headers?: any) {
- 
     try {
       let accessToken: string;
       if (headers?.authorization)

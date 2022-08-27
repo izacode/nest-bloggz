@@ -7,10 +7,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
-import { FilterDto } from 'src/dto/filter.dto';
+import { FilterDto } from '../dto/filter.dto';
 import { CustomResponseType } from 'src/types';
-import { Attempt } from 'src/schemas/attempt.schema';
-import { User } from 'src/schemas/user.schema';
+import { User } from '../schemas/user.schema';
 
 @Injectable()
 export class UsersRepository {
@@ -40,7 +39,7 @@ export class UsersRepository {
   async getUsers(filterDto: FilterDto): Promise<CustomResponseType> {
     const { PageNumber = 1, PageSize = 10 } = filterDto;
     const users = await this.userModel
-      .find({}, {_id: 0, 'accountData.userName': 1, 'accountData.email': 1 })
+      .find({}, { _id: 0, 'accountData.userName': 1, 'accountData.email': 1 })
       // .find({}, '-_id -accountData.passwordHash -passwordSalt -__v')
       //   .find({}, { projection: { _id: 0, passwordHash: 0, passwordSalt: 0 } })
       .skip((+PageNumber - 1) * +PageSize)

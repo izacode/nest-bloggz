@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from 'src/schemas/comment.schema';
-import { FilterDto } from 'src/dto/filter.dto';
-import { CustomResponseType } from 'src/types';
-import { ReactionsRepository } from 'src/likes/reactions.repository';
+import { Comment } from '../schemas/comment.schema';
+import { FilterDto } from '../dto/filter.dto';
+import { CustomResponseType } from '../types';
+import { ReactionsRepository } from '../likes/reactions.repository';
 
 @Injectable()
 export class CommentsRepository {
@@ -15,7 +15,6 @@ export class CommentsRepository {
   ) {}
 
   async getCommentById(id: string, userInfo?: any): Promise<Comment> {
-  
     let comment = await this.commentModel.findOne({ id }, '-__v');
     if (!comment) throw new NotFoundException();
     if (

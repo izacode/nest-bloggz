@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Blogger } from 'src/schemas/blogger.schema';
+import { Blogger } from '../schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
 import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
-import { Post } from 'src/schemas/post.schema';
+import { Post } from '../schemas/post.schema';
 
 @Injectable()
 export class BloggersRepository {

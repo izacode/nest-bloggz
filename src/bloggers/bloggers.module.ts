@@ -1,12 +1,14 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PostsModule } from 'src/posts/posts.module';
-import { Blogger, BloggerSchema } from 'src/schemas/blogger.schema';
-import { Comment, CommentSchema } from 'src/schemas/comment.schema';
-import { Post, PostSchema } from 'src/schemas/post.schema';
+
+
 import { BloggersController } from './bloggers.controller';
 import { BloggersRepository } from './bloggers.repository';
 import { BloggersService } from './bloggers.service';
+import { Post, PostSchema } from '../schemas/post.schema';
+import { PostsModule } from '../posts/posts.module';
+import { Blogger, BloggerSchema } from '../schemas/blogger.schema';
+import { Comment, CommentSchema } from '../schemas/comment.schema';
 
 @Module({
   imports: [
@@ -28,10 +30,7 @@ import { BloggersService } from './bloggers.service';
     ]),
   ],
   controllers: [BloggersController],
-  providers: [
-    BloggersService,
-    BloggersRepository,
-  ],
+  providers: [BloggersService, BloggersRepository],
   exports: [BloggersService, BloggersRepository],
 })
 export class BloggersModule {}

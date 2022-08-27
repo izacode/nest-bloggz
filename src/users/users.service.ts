@@ -13,7 +13,10 @@ export class UsersService {
     return this.usersRepository.checkRevokedTokensList(refreshToken, _id);
   }
 
-  async updateRevokedTokensList(refreshToken: string, id: string): Promise<Boolean> {
+  async updateRevokedTokensList(
+    refreshToken: string,
+    id: string,
+  ): Promise<Boolean> {
     return this.usersRepository.updateRevokedTokensList(refreshToken, id);
   }
 

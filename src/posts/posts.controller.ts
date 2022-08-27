@@ -11,13 +11,13 @@ import {
   Headers,
   HttpCode,
 } from '@nestjs/common';
-import { BasicAuthGuard } from 'src/auth/guards/basic-auth-guard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { CommentsService } from 'src/comments/comments.service';
-import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
-import { CurrentUserData } from 'src/common/current-user-data.param.decorator';
-import { FilterDto } from 'src/dto/filter.dto';
-import { LikeStatusDto } from 'src/dto/like-status.dto';
+import { BasicAuthGuard } from '../auth/guards/basic-auth-guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { CommentsService } from '../comments/comments.service';
+import { CreateCommentDto } from '../comments/dto/create-comment.dto';
+import { CurrentUserData } from '../common/current-user-data.param.decorator';
+import { FilterDto } from '../dto/filter.dto';
+import { LikeStatusDto } from '../dto/like-status.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 
 import { UpdatePostDto } from './dto/update-post.dto';

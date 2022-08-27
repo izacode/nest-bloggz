@@ -25,11 +25,7 @@ export class EmailManager {
     const message: string = `<H1> Please confirm your email <a href='https://somesite.com/confirm-email?code=${confirmationCode}'>confirm email <a/><H1/>`;
 
     //  3) Pass it to emailAdapter(Nodemailer)
-    const result = await this.emailAdapter.sendEmail(
-      email,
-      subject,
-      message,
-    );
+    const result = await this.emailAdapter.sendEmail(email, subject, message);
 
     return result;
   }

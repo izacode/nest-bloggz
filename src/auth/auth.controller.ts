@@ -9,18 +9,18 @@ import {
   UseGuards,
   Res,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 
-import { CurrentUserData } from 'src/common/current-user-data.param.decorator';
-// import { JwtService } from 'src/application/jwt.service';
-import { EmailDto } from 'src/dto/email.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+
+import { CurrentUserData } from '../common/current-user-data.param.decorator';
+// import { JwtService } from './application/jwt.service';
+import { EmailDto } from '../dto/email.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth-guard';
 import { LocalAuthGuard } from './guards/local-auth-guard';
-import {  Response } from 'express';
-import { Cookies } from 'src/common/cookies.param.decorator';
+import { Response } from 'express';
+import { Cookies } from '../common/cookies.param.decorator';
 import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
@@ -28,7 +28,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
-    private config: ConfigService
+    private config: ConfigService,
   ) {}
 
   @HttpCode(204)

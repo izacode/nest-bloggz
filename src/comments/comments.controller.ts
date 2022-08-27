@@ -1,7 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Put, UseGuards,Headers } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { CurrentUserData } from 'src/common/current-user-data.param.decorator';
-import { LikeStatusDto } from 'src/dto/like-status.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  UseGuards,
+  Headers,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { CurrentUserData } from '../common/current-user-data.param.decorator';
+import { LikeStatusDto } from '../dto/like-status.dto';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
@@ -10,10 +19,7 @@ export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
   @Get('/:id')
-  async getCommentById(
-    @Headers() headers: any,
-    @Param('id') id: string,
-  ) {
+  async getCommentById(@Headers() headers: any, @Param('id') id: string) {
     const comment = await this.commentsService.getCommentById(id, headers);
     return comment;
   }
@@ -50,6 +56,6 @@ export class CommentsController {
       likeStatusDto,
       currentUserData,
     );
-    return
+    return;
   }
 }

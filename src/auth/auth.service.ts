@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,11 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 import * as datefns from 'date-fns';
 import { ObjectId } from 'mongodb';
 
-import { User } from 'src/schemas/user.schema';
-import { UsersRepository } from 'src/users/users.repository';
-import { EmailService } from 'src/emails/email.service';
+import { User } from '../schemas/user.schema';
+import { UsersRepository } from '../users/users.repository';
+import { EmailService } from '../emails/email.service';
 import * as bcrypt from 'bcrypt';
-import { EmailDto } from 'src/dto/email.dto';
+import { EmailDto } from '../dto/email.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -166,7 +164,4 @@ export class AuthService {
 
     return result;
   }
-
-
-    
 }

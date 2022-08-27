@@ -11,15 +11,15 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { Blogger } from 'src/schemas/blogger.schema';
+import { Blogger } from '../schemas/blogger.schema';
 import { CustomResponseType } from 'src/types';
 import { BloggersService } from './bloggers.service';
 import { CreateBloggerDto } from './dto/create-blogger.dto';
 import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
-import { CreatePostDto } from 'src/posts/dto/create-post.dto';
-import { PostsService } from 'src/posts/posts.service';
-import { BasicAuthGuard } from 'src/auth/guards/basic-auth-guard';
+import { CreatePostDto } from '../posts/dto/create-post.dto';
+import { PostsService } from '../posts/posts.service';
+import { BasicAuthGuard } from '../auth/guards/basic-auth-guard';
 
 @Controller('bloggers')
 export class BloggersController {
@@ -87,7 +87,11 @@ export class BloggersController {
     @Query() filterDto: FilterDto,
     @Headers() headers: any,
   ) {
-    const bloggerPosts = await this.postsService.getPosts(filterDto, headers, id);
+    const bloggerPosts = await this.postsService.getPosts(
+      filterDto,
+      headers,
+      id,
+    );
     return bloggerPosts;
   }
   @UseGuards(BasicAuthGuard)

@@ -1,11 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { User } from "src/schemas/user.schema";
-import { EmailManager } from "./email.manager";
+import { Injectable } from '@nestjs/common';
 
+import { EmailManager } from './email.manager';
 
 @Injectable()
 export class EmailService {
-  constructor(private  emailManager: EmailManager) {}
+  constructor(private emailManager: EmailManager) {}
   async recoverPassword(email: string) {
     const result = await this.emailManager.sendPasswordRecoveryMessage(email);
     return result;
