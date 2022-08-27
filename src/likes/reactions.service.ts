@@ -36,8 +36,8 @@ export class ReactionsService {
       postId,
       likeStatus,
     };
-    console.log('reaction--', reaction);
-    debugger;
-    return this.reactionsRepository.createPostReaction(reaction);
+
+   await this.reactionsRepository.createPostReaction(reaction);
+   return this.reactionsRepository.getUsersPostReaction(postId, userId);
   }
 }

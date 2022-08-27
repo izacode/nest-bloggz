@@ -131,7 +131,7 @@ export class PostsService {
         currentUserData.username,
         likeStatusDto,
       );
-      debugger;
+      
       post.extendedLikesInfo.myStatus = reaction.likeStatus;
       if (reaction.likeStatus === 'Like') {
         post.extendedLikesInfo.likesCount++;

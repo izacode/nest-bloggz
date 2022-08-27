@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Attempt } from '../schemas/attempt.schema';
 import { Blogger } from '../schemas/blogger.schema';
 import { CommentReaction } from '../schemas/comment-reaction.schema';
@@ -21,16 +21,41 @@ export class TestingClearService {
   private commentReactionModel: Model<CommentReaction>;
   @InjectModel(User.name) private userModel: Model<User>;
   async dropTestBase() {
-    debugger;
-
-    await this.bloggerModel.collection.drop();
-    await this.postModel.collection.drop();
-    await this.commentModel.collection.drop();
-    await this.postReactionModel.collection.drop();
-    await this.attemptModel.collection.drop();
-    await this.commentReactionModel.collection.drop();
-    await this.userModel.collection.drop();
-    console.log(mongoose.connection.db);
+    try {
+      await this.bloggerModel.collection.drop();
+    } catch {
+      console.log('Bloggers collection does not exist');
+    }
+    try {
+      await this.postModel.collection.drop();
+    } catch {
+      console.log('Posts collection does not exist');
+    }
+    try {
+      await this.commentModel.collection.drop();
+    } catch {
+      console.log('Comments collection does not exist');
+    }
+    try {
+      await this.postReactionModel.collection.drop();
+    } catch {
+      console.log('PostReactions collection does not exist');
+    }
+    try {
+      await this.attemptModel.collection.drop();
+    } catch {
+      console.log('Attempts collection does not exist');
+    }
+    try {
+      await this.commentReactionModel.collection.drop();
+    } catch {
+      console.log('CommentReactions collection does not exist');
+    }
+    try {
+      await this.userModel.collection.drop();
+    } catch {
+      console.log('Users collection does not exist');
+    }
 
     return;
   }
