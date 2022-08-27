@@ -59,8 +59,15 @@ export class UsersRepository {
     return customResponse;
   }
   async createUser(user: any): Promise<any> {
+  
     await this.userModel.create(user);
     const createdUser = await this.userModel.findOne({ _id: user._id });
+    return createdUser;
+  }
+  async createUser1(user: any): Promise<any> {
+
+    await this.userModel.create(user);
+    const createdUser = await this.userModel.findOne({ _id: user._id }, {"_id": 0, id: user._id, login: user.accountData.userName});
     return createdUser;
   }
   // async findUserByLoginOrEmail(login: string, email: string): Promise<User> {
