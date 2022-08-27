@@ -103,14 +103,14 @@ export class PostsRepository {
     //   bloggerName: bloggers.find((b) => b.id === newPost.bloggerId.toString())
     //     ?.name,
     // });
-    debugger
+    debugger;
     return createdPost;
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
     let post = await this.postModel
-      .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
+      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
     if (!post) throw new NotFoundException();
     // const postWithBloggerName: Post = Object.assign(post, {
@@ -134,7 +134,9 @@ export class PostsRepository {
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
 
-    return post;
+    return this.postModel
+      .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
+      .exec();
   }
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
