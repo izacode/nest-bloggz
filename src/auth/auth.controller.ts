@@ -53,6 +53,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
+  @HttpCode(200)
   async login(
     @CurrentUserData() currentUserData: any,
     @Res({ passthrough: true }) response: Response,
@@ -119,8 +120,8 @@ export class AuthController {
     );
 
     response.cookie('refreshToken', newRefreshToken, {
-       httpOnly: true,
-       secure: true,
+      httpOnly: true,
+      secure: true,
     });
 
     return { accessToken };

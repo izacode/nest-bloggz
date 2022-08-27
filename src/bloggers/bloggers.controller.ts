@@ -96,13 +96,13 @@ export class BloggersController {
   }
   @UseGuards(BasicAuthGuard)
   @Post('/:id/posts')
-  @HttpCode(204)
+  @HttpCode(201)
   async createBloggerPost(
     @Param('id') id: string,
     @Body() createPostDto: CreatePostDto,
   ) {
     const newPost = await this.postsService.createPost(createPostDto, id);
-
+    debugger;
     return newPost;
   }
 }

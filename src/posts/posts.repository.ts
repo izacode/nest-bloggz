@@ -96,13 +96,14 @@ export class PostsRepository {
 
     const createdPost = await this.postModel.findOne(
       { id: newPost.id },
-      '-_id -__v -extendedLikesInfo._id',
+      { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 },
     );
     // if (!createdPost) return null;
     // const createdPostWithBloggerName: Post = Object.assign(createdPost, {
     //   bloggerName: bloggers.find((b) => b.id === newPost.bloggerId.toString())
     //     ?.name,
     // });
+    debugger
     return createdPost;
   }
 
