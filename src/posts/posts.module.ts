@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BloggersModule } from '../bloggers/bloggers.module';
 import { CommentsModule } from '../comments/comments.module';
@@ -21,6 +21,7 @@ import {
 } from '../schemas/post-reaction.schema';
 import { ReactionsService } from '../likes/reactions.service';
 import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware';
+
 
 @Module({
   imports: [
@@ -64,7 +65,8 @@ export class PostsModule {
     consumer
       .apply(LikeStatusValidationMiddleware)
       .forRoutes(
-        'posts/:id/like-status',
+        { path: 'posts/:id/like-status', method: RequestMethod.PUT }
+         
       );
   }
 }

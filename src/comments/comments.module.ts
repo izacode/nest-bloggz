@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -61,6 +61,6 @@ export class CommentsModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LikeStatusValidationMiddleware)
-      .forRoutes('posts/:id/like-status');
+      .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
   }
 }
