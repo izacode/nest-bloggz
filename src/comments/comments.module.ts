@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware.';
 
 import { ReactionsRepository } from '../likes/reactions.repository';
 import { ReactionsService } from '../likes/reactions.service';
@@ -56,4 +57,10 @@ import { CommentsService } from './comments.service';
   ],
   exports: [CommentsService, CommentsRepository],
 })
-export class CommentsModule {}
+export class CommentsModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LikeStatusValidationMiddleware)
+      .forRoutes('posts/:id/like-status');
+  }
+}
