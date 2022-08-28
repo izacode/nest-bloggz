@@ -33,7 +33,7 @@ export class CommentsRepository {
 
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
-    return comment;
+    return this.commentModel.findOne({ id }, '-_id -__v likesInfo._id');
   }
 
   async createComment(newComment: any): Promise<Comment> {
