@@ -33,17 +33,20 @@ export class CommentsRepository {
 
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
-    return this.commentModel.findOne(
+   
+    const commentToReturn = await this.commentModel.findOne(
       { id },
-      { _id: 0, __v: 0, 'likesInfo._id': 0 },
+      { _id: 0, __v: 0, 'likesInfo._id': 0, postId: 0 },
     );
+  
+    return commentToReturn;
   }
 
   async createComment(newComment: any): Promise<Comment> {
     await this.commentModel.create(newComment);
     const comment = this.commentModel.findOne(
       { id: newComment.id },
-      { _id: 0, __v: 0, 'likesInfo._id': 0, postId:0},
+      { _id: 0, __v: 0, 'likesInfo._id': 0, postId: 0 },
     );
     return comment;
   }
