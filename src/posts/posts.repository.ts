@@ -103,13 +103,13 @@ export class PostsRepository {
     //   bloggerName: bloggers.find((b) => b.id === newPost.bloggerId.toString())
     //     ?.name,
     // });
-    debugger;
+   
     return createdPost;
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
-    debugger;
+   
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();

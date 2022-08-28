@@ -102,7 +102,7 @@ export class BloggersController {
     @Body() createPostDto: CreatePostDto,
   ) {
     const newPost = await this.postsService.createPost(createPostDto, id);
-    debugger;
+   
     return newPost;
   }
 }

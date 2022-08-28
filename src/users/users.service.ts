@@ -51,7 +51,7 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
-    debugger;
+  
     const { login, email, password } = createUserDto;
     // const isUserExists = await this.usersRepository.findUserByLoginOrEmail(login, email)
     // if(isUserExists) throw new BadRequestException();

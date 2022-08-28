@@ -18,7 +18,7 @@ export class ReactionsService {
       likeStatus,
     };
     console.log('reaction--', reaction);
-    debugger;
+
     return this.reactionsRepository.createCommentReaction(reaction);
   }
   async createPostReaction(

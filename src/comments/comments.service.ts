@@ -100,7 +100,7 @@ export class CommentsService {
         id,
         currentUserData.sub,
       );
-    debugger;
+   
     // If user hasn't reacted before
     if (!currentUserCommentReaction) {
       console.log(
@@ -113,7 +113,7 @@ export class CommentsService {
         currentUserData.sub,
         likeStatusDto,
       );
-      debugger;
+    
       comment.likesInfo.myStatus = reaction.likeStatus;
       if (reaction.likeStatus === 'Like') {
         comment.likesInfo.likesCount++;
@@ -147,7 +147,7 @@ export class CommentsService {
         return;
       }
     } else if (likeStatus === 'Dislike') {
-      debugger;
+   
       if (currentUserCommentReaction.likeStatus === 'Dislike') return;
       if (currentUserCommentReaction.likeStatus === 'Like') {
         comment.likesInfo.myStatus = 'Dislike';

@@ -77,7 +77,7 @@ export class PostsService {
       const userInfo = await this.jwtService.verify(accessToken, {
         secret: await this.config.get('ACCESS_TOKEN_SECRET'),
       });
-      debugger;
+
       return this.postsRepository.getPost(id, userInfo);
     } catch {
       return this.postsRepository.getPost(id);
@@ -165,7 +165,7 @@ export class PostsService {
         
       }
     } else if (likeStatus === 'Dislike') {
-      debugger;
+  
       if (currentUserPostReaction.likeStatus === 'Dislike') return;
       if (currentUserPostReaction.likeStatus === 'Like') {
         post.extendedLikesInfo.myStatus = 'Dislike';
