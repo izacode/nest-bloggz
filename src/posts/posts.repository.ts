@@ -197,13 +197,7 @@ export class PostsRepository {
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
     await post.save();
-    post = await this.postModel
-      .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0, 'newestLikes._id': 0 })
-      .exec();
-   
-
-
-    return post
+    return post;
   }
   // =======================================================================================================================
 
