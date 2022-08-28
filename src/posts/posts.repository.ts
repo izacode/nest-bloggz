@@ -103,13 +103,71 @@ export class PostsRepository {
     //   bloggerName: bloggers.find((b) => b.id === newPost.bloggerId.toString())
     //     ?.name,
     // });
-   
+
     return createdPost;
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
-   
+
+    let post = await this.postModel
+      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
+      .exec();
+    if (!post) throw new NotFoundException();
+    // const postWithBloggerName: Post = Object.assign(post, {
+    //   bloggerName: bloggers.find((b) => b.id === post?.bloggerId.toString())
+    //     ?.name,
+    // });
+
+    if (
+      !userInfo ||
+      !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
+    ) {
+      post.extendedLikesInfo.myStatus = 'None';
+    } else {
+      const userPostReaction =
+        await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
+
+      post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
+    }
+
+    const lastThreePostLikeReactions =
+      await this.reactionsRepository.getLastThreePostLikeReactions(id);
+    post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+
+    return this.postModel
+      .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
+      .exec();
+  }
+
+  async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
+    const { title, shortDescription, content, bloggerId } = updatePostDto;
+    const postToUpdate = await this.getPost(id);
+
+    postToUpdate.title = title;
+    postToUpdate.shortDescription = shortDescription;
+    postToUpdate.content = content;
+    postToUpdate.bloggerId = bloggerId;
+    await postToUpdate.save();
+    return true;
+  }
+
+  async deletePost(id: string): Promise<boolean> {
+    const isDeleted = await this.postModel.deleteOne({ id });
+    return isDeleted.deletedCount === 1;
+  }
+
+  async deleteAllPosts(): Promise<boolean> {
+    await this.postModel.deleteMany({});
+    const totalCount: number = await this.postModel.countDocuments();
+    if (totalCount !== 0) return false;
+    return true;
+  }
+
+  // ============================= Get Post for reactioon=============================================================
+  async getPostForReact(id: string, userInfo?: any): Promise<Post> {
+    // const bloggers = await this.bloggerModel.find().exec();
+
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
@@ -139,30 +197,7 @@ export class PostsRepository {
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
   }
-
-  async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
-    const { title, shortDescription, content, bloggerId } = updatePostDto;
-    const postToUpdate = await this.getPost(id);
-
-    postToUpdate.title = title;
-    postToUpdate.shortDescription = shortDescription;
-    postToUpdate.content = content;
-    postToUpdate.bloggerId = bloggerId;
-    await postToUpdate.save();
-    return true;
-  }
-
-  async deletePost(id: string): Promise<boolean> {
-    const isDeleted = await this.postModel.deleteOne({ id });
-    return isDeleted.deletedCount === 1;
-  }
-
-  async deleteAllPosts(): Promise<boolean> {
-    await this.postModel.deleteMany({});
-    const totalCount: number = await this.postModel.countDocuments();
-    if (totalCount !== 0) return false;
-    return true;
-  }
+  // =======================================================================================================================
 
   // async getAllBloggerPosts(
   //   id: string,

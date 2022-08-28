@@ -110,7 +110,7 @@ export class PostsService {
     currentUserData: any,
   ) {
     const { likeStatus } = likeStatusDto;
-    let post = await this.postsRepository.getPost(id);
+    let post = await this.postsRepository.getPostForReact(id);
 
     const currentUserPostReaction =
       await this.reactionsRepository.getUsersPostReaction(
