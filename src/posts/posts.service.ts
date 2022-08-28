@@ -77,9 +77,10 @@ export class PostsService {
       const userInfo = await this.jwtService.verify(accessToken, {
         secret: await this.config.get('ACCESS_TOKEN_SECRET'),
       });
-
+      
       return this.postsRepository.getPost(id, userInfo);
     } catch {
+  
       return this.postsRepository.getPost(id);
     }
   }
@@ -162,10 +163,8 @@ export class PostsService {
 
         currentUserPostReaction.likeStatus = 'Like';
         currentUserPostReaction.save();
-        
       }
     } else if (likeStatus === 'Dislike') {
-  
       if (currentUserPostReaction.likeStatus === 'Dislike') return;
       if (currentUserPostReaction.likeStatus === 'Like') {
         post.extendedLikesInfo.myStatus = 'Dislike';

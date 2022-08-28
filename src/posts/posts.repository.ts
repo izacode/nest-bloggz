@@ -124,18 +124,21 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
       post.extendedLikesInfo.myStatus = 'None';
+      
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
+      
     }
 
     const lastThreePostLikeReactions =
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+    post.save();
 
-    return this.postModel
+    return await this.postModel
       .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
   }
@@ -182,16 +185,19 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
       post.extendedLikesInfo.myStatus = 'None';
+      
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
+     
     }
 
     const lastThreePostLikeReactions =
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+    post.save();
 
     return this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
