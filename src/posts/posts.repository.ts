@@ -109,7 +109,7 @@ export class PostsRepository {
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
-
+    debugger;
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
@@ -123,24 +123,25 @@ export class PostsRepository {
       !userInfo ||
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
+      debugger;
       post.extendedLikesInfo.myStatus = 'None';
-      
     } else {
+      debugger;
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
-      
     }
 
     const lastThreePostLikeReactions =
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-    post.save();
-
-    return await this.postModel
+    await post.save();
+    post = await this.postModel
       .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
+    debugger;
+    return post;
   }
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
@@ -185,23 +186,19 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
       post.extendedLikesInfo.myStatus = 'None';
-      
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
-     
     }
 
     const lastThreePostLikeReactions =
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-    post.save();
+    await post.save();
 
-    return this.postModel
-      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
-      .exec();
+    return post
   }
   // =======================================================================================================================
 
