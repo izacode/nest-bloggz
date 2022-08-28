@@ -6,17 +6,17 @@ export class LikeStatusValidationMiddleware implements NestMiddleware {
   // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
   async use(req: Request, res: Response, next: NextFunction) {
     const likeStatus: string = req.body.likeStatus;
-    let errorMessages:any;
+    let errors:any;
     if (likeStatus.length > 21 || likeStatus.length < 1) {
-      errorMessages = {
-        errors: [
+      errors = {
+        errorsMessages: [
           {
             message: 'wrong likestatus',
             field: 'likeStatus',
           },
         ],
       };
-          return res.status(400).json(errorMessages);
+          return res.status(400).json(errors);
     }
     next();
   }
