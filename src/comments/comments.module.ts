@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware.';
+import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware';
 
 import { ReactionsRepository } from '../likes/reactions.repository';
 import { ReactionsService } from '../likes/reactions.service';

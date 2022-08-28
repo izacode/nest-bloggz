@@ -7,6 +7,7 @@ import {
   Put,
   UseGuards,
   Headers,
+  HttpCode,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
 import { CurrentUserData } from '../common/current-user-data.param.decorator';
@@ -46,6 +47,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id/like-status')
+  @HttpCode(204)
   async reactOnComment(
     @Param('id') id: string,
     @Body() likeStatusDto: LikeStatusDto,

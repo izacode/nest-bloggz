@@ -20,7 +20,7 @@ import {
   PostReactionSchema,
 } from '../schemas/post-reaction.schema';
 import { ReactionsService } from '../likes/reactions.service';
-import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware.';
+import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware';
 
 @Module({
   imports: [
