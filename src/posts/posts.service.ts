@@ -77,7 +77,7 @@ export class PostsService {
       const userInfo = await this.jwtService.verify(accessToken, {
         secret: await this.config.get('ACCESS_TOKEN_SECRET'),
       });
-
+      debugger;
       return this.postsRepository.getPost(id, userInfo);
     } catch {
       return this.postsRepository.getPost(id);
@@ -110,7 +110,7 @@ export class PostsService {
     currentUserData: any,
   ) {
     const { likeStatus } = likeStatusDto;
-    const post = await this.postsRepository.getPost(id);
+    let post = await this.postsRepository.getPost(id);
 
     const currentUserPostReaction =
       await this.reactionsRepository.getUsersPostReaction(
@@ -131,7 +131,7 @@ export class PostsService {
         currentUserData.username,
         likeStatusDto,
       );
-      
+
       post.extendedLikesInfo.myStatus = reaction.likeStatus;
       if (reaction.likeStatus === 'Like') {
         post.extendedLikesInfo.likesCount++;
