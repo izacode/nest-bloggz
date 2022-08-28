@@ -136,7 +136,7 @@ export class PostsRepository {
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
 
     return this.postModel
-      .findOne({ id }, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
+      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
   }
 

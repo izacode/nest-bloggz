@@ -162,7 +162,7 @@ export class PostsService {
 
         currentUserPostReaction.likeStatus = 'Like';
         currentUserPostReaction.save();
-        return;
+        
       }
     } else if (likeStatus === 'Dislike') {
       debugger;
