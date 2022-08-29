@@ -60,10 +60,10 @@ import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validat
   exports: [PostsService, PostsRepository],
 })
 export class PostsModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LikeStatusValidationMiddleware)
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(LikeStatusValidationMiddleware)
       
-      .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
-  }
+  //     .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
+  // }
 }

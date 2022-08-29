@@ -30,10 +30,10 @@ import { BloggersController } from './bloggers/bloggers.controller';
   ],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(logger)
-      .exclude({ path: 'cats', method: RequestMethod.GET })
-      .forRoutes(CommentsController, PostsController, BloggersController);
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(logger)
+  //     .exclude({ path: 'cats', method: RequestMethod.GET })
+  //     .forRoutes(CommentsController, PostsController, BloggersController);
+  // }
 }
