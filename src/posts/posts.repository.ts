@@ -42,7 +42,7 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUserAllPostsReactions(userInfo.sub))
     ) {
       posts = await this.postModel
-        .find(filter, '-_id -__v -likesInfo._id')
+        .find(filter, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
         .skip((+PageNumber - 1) * +PageSize)
         .limit(+PageSize)
         .exec();
@@ -109,7 +109,7 @@ export class PostsRepository {
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
-  
+
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
@@ -125,7 +125,6 @@ export class PostsRepository {
     ) {
       post.extendedLikesInfo.myStatus = 'None';
     } else {
-     
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
@@ -147,7 +146,7 @@ export class PostsRepository {
         },
       )
       .exec();
-  
+
     return post;
   }
 

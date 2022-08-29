@@ -71,7 +71,10 @@ export class ReactionsRepository {
 
   async getLastThreePostLikeReactions(postId: string) {
     const lastThreeLikeReactions = await this.postReactionModel
-      .find({ postId, likeStatus: 'Like' }, '-postId -likeStatus -_id -__v')
+      .find(
+        { postId, likeStatus: 'Like' },
+        { postId: 0, likeStatus: 0, _id: 0, __v: 0 },
+      )
       .sort({ addedAt: -1 })
       .limit(3);
     return lastThreeLikeReactions ? lastThreeLikeReactions : [];
