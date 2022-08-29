@@ -63,7 +63,7 @@ export class PostsModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LikeStatusValidationMiddleware)
-      .exclude({ path: 'cats', method: RequestMethod.GET })
+      
       .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
   }
 }

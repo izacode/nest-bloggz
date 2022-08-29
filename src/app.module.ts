@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
@@ -11,7 +11,6 @@ import { logger } from './middleware/logger.middleware';
 import { CommentsController } from './comments/comments.controller';
 import { PostsController } from './posts/posts.controller';
 import { BloggersController } from './bloggers/bloggers.controller';
-
 
 @Module({
   imports: [
@@ -32,6 +31,9 @@ import { BloggersController } from './bloggers/bloggers.controller';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(logger).forRoutes(CommentsController, PostsController,BloggersController);
+    consumer
+      .apply(logger)
+      .exclude({ path: 'cats', method: RequestMethod.GET })
+      .forRoutes(CommentsController, PostsController, BloggersController);
   }
 }
