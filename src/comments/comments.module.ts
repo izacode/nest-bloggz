@@ -58,9 +58,9 @@ import { CommentsService } from './comments.service';
   exports: [CommentsService, CommentsRepository],
 })
 export class CommentsModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer
-  //     .apply(LikeStatusValidationMiddleware)
-  //     .forRoutes({ path: 'comments/:id/like-status', method: RequestMethod.PUT });
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LikeStatusValidationMiddleware)
+      .forRoutes({ path: 'comments/:id/like-status', method: RequestMethod.PUT },);
+  }
 }
