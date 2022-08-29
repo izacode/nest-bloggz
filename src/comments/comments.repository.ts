@@ -33,7 +33,7 @@ export class CommentsRepository {
 
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
-    comment.save();
+    await comment.save();
     const commentToReturn = await this.commentModel.findOne(
       { id },
       { _id: 0, __v: 0, 'likesInfo._id': 0, postId: 0 },
