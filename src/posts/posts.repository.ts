@@ -109,7 +109,7 @@ export class PostsRepository {
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
     // const bloggers = await this.bloggerModel.find().exec();
-    debugger;
+  
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
@@ -123,10 +123,9 @@ export class PostsRepository {
       !userInfo ||
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
-      debugger;
       post.extendedLikesInfo.myStatus = 'None';
     } else {
-      debugger;
+     
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
@@ -148,7 +147,7 @@ export class PostsRepository {
         },
       )
       .exec();
-    debugger;
+  
     return post;
   }
 

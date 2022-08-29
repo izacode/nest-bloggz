@@ -121,10 +121,6 @@ export class PostsService {
 
     // If user hasn't reacted before
     if (!currentUserPostReaction) {
-      console.log(
-        'if there is no reaction, currentUserData.sub--',
-        currentUserData.sub,
-      );
 
       const reaction = await this.reactionsService.createPostReaction(
         id,
