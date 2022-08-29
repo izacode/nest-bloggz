@@ -61,6 +61,6 @@ export class CommentsModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LikeStatusValidationMiddleware)
-      .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
+      .forRoutes({ path: 'comments/:id/like-status', method: RequestMethod.PUT });
   }
 }
