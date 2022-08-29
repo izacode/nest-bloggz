@@ -93,14 +93,14 @@ export class CommentsService {
     currentUserData: any,
   ) {
     const { likeStatus } = likeStatusDto;
-    const comment = await this.getCommentById(id);
+    const comment = await this.getCommentByIdForReaction(id);
 
     const currentUserCommentReaction =
       await this.reactionsRepository.getUsersCommentReaction(
         id,
         currentUserData.sub,
       );
-   
+
     // If user hasn't reacted before
     if (!currentUserCommentReaction) {
       console.log(
@@ -113,7 +113,7 @@ export class CommentsService {
         currentUserData.sub,
         likeStatusDto,
       );
-    
+
       comment.likesInfo.myStatus = reaction.likeStatus;
       if (reaction.likeStatus === 'Like') {
         comment.likesInfo.likesCount++;
@@ -147,7 +147,6 @@ export class CommentsService {
         return;
       }
     } else if (likeStatus === 'Dislike') {
-   
       if (currentUserCommentReaction.likeStatus === 'Dislike') return;
       if (currentUserCommentReaction.likeStatus === 'Like') {
         comment.likesInfo.myStatus = 'Dislike';
@@ -187,6 +186,20 @@ export class CommentsService {
         currentUserCommentReaction.save();
         return;
       }
+    }
+  }
+  async getCommentByIdForReaction(id: string, headers?: any) {
+    try {
+      let accessToken: string;
+      if (headers?.authorization)
+        accessToken = headers.authorization.split(' ')[1];
+      const userInfo = await this.jwtService.verify(accessToken, {
+        secret: await this.config.get('ACCESS_TOKEN_SECRET'),
+      });
+
+      return this.commentsRepository.getCommentByIdForReaction(id, userInfo);
+    } catch {
+      return this.commentsRepository.getCommentByIdForReaction(id);
     }
   }
 }

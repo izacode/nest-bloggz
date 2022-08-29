@@ -33,12 +33,12 @@ export class CommentsRepository {
 
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
-   
+    comment.save();
     const commentToReturn = await this.commentModel.findOne(
       { id },
       { _id: 0, __v: 0, 'likesInfo._id': 0, postId: 0 },
     );
-  
+
     return commentToReturn;
   }
 
@@ -126,5 +126,33 @@ export class CommentsRepository {
   async deleteComment(id: string): Promise<boolean> {
     const isDeleted = await this.commentModel.deleteOne({ id });
     return isDeleted.deletedCount === 1;
+  }
+
+  async getCommentByIdForReaction(id: string, userInfo?: any): Promise<Comment> {
+    let comment = await this.commentModel.findOne({ id }, '-__v');
+    if (!comment) throw new NotFoundException();
+    if (
+      !userInfo ||
+      !(await this.reactionsRepository.getUsersAllCommentsReactions(
+        userInfo.sub,
+      ))
+    ) {
+      comment.likesInfo.myStatus = 'None';
+    } else {
+      const userCommentReaction =
+        await this.reactionsRepository.getUsersCommentReaction(
+          id,
+          userInfo.sub,
+        );
+
+      comment.likesInfo.myStatus = userCommentReaction.likeStatus;
+    }
+    comment.save();
+    const commentToReturn = await this.commentModel.findOne(
+      { id },
+      { _id: 1, __v: 0, 'likesInfo._id': 0, postId: 0 },
+    );
+
+    return commentToReturn;
   }
 }
