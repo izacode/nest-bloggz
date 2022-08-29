@@ -5,20 +5,20 @@ import { Request, Response, NextFunction } from 'express';
 export class LikeStatusValidationMiddleware implements NestMiddleware {
   // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
   async use(req: Request, res: Response, next: NextFunction) {
-    if (typeof req.body.likeStatus === 'string') {
-      const likeStatus: string = req.body.likeStatus;
-      let errors: any;
-      if (likeStatus.length > 20 || likeStatus === '') {
-        errors = {
-          errorsMessages: [
-            {
-              message: 'wrong likestatus',
-              field: 'likeStatus',
-            },
-          ],
-        };
+
+    const statuses = ["Like", "Dislike", "None"]
+    if (!statuses.includes(req.body.likeStatus)) {
+      let errors = {
+        errorsMessages: [
+          {
+            message: 'wrong likestatus',
+            field: 'likeStatus',
+          },
+        ],
+      };
+        
         return res.status(400).json(errors);
-      }
+      
     }
 
     next();
