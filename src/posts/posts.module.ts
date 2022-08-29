@@ -22,7 +22,6 @@ import {
 import { ReactionsService } from '../likes/reactions.service';
 import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware';
 
-
 @Module({
   imports: [
     forwardRef(() => BloggersModule),
@@ -64,9 +63,7 @@ export class PostsModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LikeStatusValidationMiddleware)
-      .forRoutes(
-        { path: 'posts/:id/like-status', method: RequestMethod.PUT }
-         
-      );
+      .exclude({ path: 'cats', method: RequestMethod.GET })
+      .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
   }
 }
