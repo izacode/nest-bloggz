@@ -17,7 +17,6 @@ export class ReactionsService {
       userId,
       likeStatus,
     };
-  
 
     return this.reactionsRepository.createCommentReaction(reaction);
   }
@@ -30,15 +29,14 @@ export class ReactionsService {
     const { likeStatus } = reactionStatus;
 
     const reaction = {
-      userId,
       addedAt: new Date().toISOString(),
+      userId,
       login,
       postId,
       likeStatus,
     };
-   
 
-   await this.reactionsRepository.createPostReaction(reaction);
-   return this.reactionsRepository.getUsersPostReaction(postId, userId);
+    await this.reactionsRepository.createPostReaction(reaction);
+    return this.reactionsRepository.getUsersPostReaction(postId, userId);
   }
 }

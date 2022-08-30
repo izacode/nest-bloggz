@@ -89,7 +89,6 @@ export class PostsRepository {
 
         // p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
 
-        
         // console.log('p------------', p.extendedLikesInfo.newestLikes);
         // return p;
       });
@@ -99,7 +98,7 @@ export class PostsRepository {
     postsToReturn.map(async (p) => {
       let lastThreePostLikeReactions =
         await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
-      
+
       p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
       return p;
     });
