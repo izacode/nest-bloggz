@@ -77,8 +77,8 @@ export class PostsRepository {
 
       posts.map(async (p) => {
         userPostReactions.forEach((r) => {
-          if (r.postId === p.id)
-            return (p.extendedLikesInfo.myStatus = r.likeStatus);
+          if (r.postId === p.id){return (p.extendedLikesInfo.myStatus = r.likeStatus);}
+          else{p.extendedLikesInfo.myStatus = "None"}  
         });
         // let lastThreePostLikeReactions =
         //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
