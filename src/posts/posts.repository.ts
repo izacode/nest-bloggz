@@ -61,7 +61,12 @@ export class PostsRepository {
 
       posts = (
         await this.postModel
-          .find(filter, '-_id -__v -likesInfo._id')
+          .find(filter, {
+            _id: 0,
+            __v: 0,
+            'extendedLikesInfo._id': 0,
+            'extendedLikesInfo.newestLikes._id': 0,
+          })
           .skip((+PageNumber - 1) * +PageSize)
           .limit(+PageSize)
           .exec()

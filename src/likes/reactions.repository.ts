@@ -77,6 +77,7 @@ export class ReactionsRepository {
       )
       .sort({ addedAt: -1 })
       .limit(3);
+      console.log(lastThreeLikeReactions)
     return lastThreeLikeReactions ? lastThreeLikeReactions : [];
   }
 
