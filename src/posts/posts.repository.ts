@@ -99,13 +99,8 @@ export class PostsRepository {
     postsToReturn.map(async (p) => {
       let lastThreePostLikeReactions =
         await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
-      const rrr = lastThreePostLikeReactions.map((r) =>
-        Object.assign(
-          {},
-          { login: r.login, userId: r.userId, },
-        ),
-      );
-      p.extendedLikesInfo.newestLikes = rrr;
+      
+      p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
       return p;
     });
 
