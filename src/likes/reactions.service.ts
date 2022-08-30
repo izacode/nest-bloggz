@@ -36,7 +36,7 @@ export class ReactionsService {
       postId,
       likeStatus,
     };
-    console.log(reaction)
+   
 
    await this.reactionsRepository.createPostReaction(reaction);
    return this.reactionsRepository.getUsersPostReaction(postId, userId);

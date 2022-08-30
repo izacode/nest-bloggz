@@ -10,7 +10,7 @@ export class PostReaction extends Document {
   addedAt: string;
   @Prop()
   login: string;
-  
+
   @Prop()
   postId: string;
   @Prop()
