@@ -82,15 +82,16 @@ export class PostsRepository {
         });
         // let lastThreePostLikeReactions =
         //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
-        // const rrr = lastThreePostLikeReactions.map((r) =>
-        //   Object.assign(
-        //     {},
-        //     { login: r.login, userId: r.userId, addedAt: r.addedAt },
-        //   ),
+        // console.log(
+        //   'inside postss repo lastThreePostLikeReactions----',
+        //   lastThreePostLikeReactions,
         // );
-        //  let postToReturn = JSON.parse(JSON.stringify(p));
-        // postToReturn.extendedLikesInfo.newestLikes = rrr;
-        // return postToReturn;
+
+        // p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+
+        
+        // console.log('p------------', p.extendedLikesInfo.newestLikes);
+        // return p;
       });
     }
 
@@ -101,7 +102,7 @@ export class PostsRepository {
       const rrr = lastThreePostLikeReactions.map((r) =>
         Object.assign(
           {},
-          { login: r.login, userId: r.userId, addedAt: "Any<String>" },
+          { login: r.login, userId: r.userId, },
         ),
       );
       p.extendedLikesInfo.newestLikes = rrr;

@@ -17,7 +17,7 @@ export class ReactionsService {
       userId,
       likeStatus,
     };
-    console.log('reaction--', reaction);
+  
 
     return this.reactionsRepository.createCommentReaction(reaction);
   }
