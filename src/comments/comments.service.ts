@@ -103,10 +103,7 @@ export class CommentsService {
 
     // If user hasn't reacted before
     if (!currentUserCommentReaction) {
-      console.log(
-        'if there is no reaction, currentUserData.sub--',
-        currentUserData.sub,
-      );
+     
 
       const reaction = await this.reactionsService.createCommentReaction(
         id,

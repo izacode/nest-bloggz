@@ -59,23 +59,26 @@ export class PostsRepository {
       const userPostReactions =
         await this.reactionsRepository.getUserAllPostsReactions(userInfo.sub);
 
-      posts = (
-        await this.postModel
-          .find(filter, {
-            _id: 0,
-            __v: 0,
-            'extendedLikesInfo._id': 0,
-            'extendedLikesInfo.newestLikes._id': 0,
-          })
-          .skip((+PageNumber - 1) * +PageSize)
-          .limit(+PageSize)
-          .exec()
-      ).map((p) => {
+      posts = (await this.postModel
+        .find(filter, {
+          _id: 0,
+          __v: 0,
+          'extendedLikesInfo._id': 0,
+          'extendedLikesInfo.newestLikes._id': 0,
+          'extendedLikesInfo.newestLikes.addedAt': 0,
+        })
+        .skip((+PageNumber - 1) * +PageSize)
+        .limit(+PageSize)
+        .exec())
+
+      posts.map(async (p) => {
         userPostReactions.forEach((r) => {
           if (r.postId === p.id)
             return (p.extendedLikesInfo.myStatus = r.likeStatus);
         });
-
+        const lastThreePostLikeReactions =
+          await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
+        p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
         return p;
       });
     }

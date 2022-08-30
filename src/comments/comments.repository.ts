@@ -57,7 +57,7 @@ export class CommentsRepository {
     userInfo?: any,
   ): Promise<CustomResponseType> {
     const { PageNumber, PageSize } = filterDto;
-    console.log(userInfo);
+   
 
     let postComments: Comment[];
     if (
