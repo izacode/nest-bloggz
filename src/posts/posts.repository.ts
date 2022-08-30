@@ -66,6 +66,7 @@ export class PostsRepository {
         _id: 0,
         __v: 0,
         'extendedLikesInfo._id': 0,
+        // 'extendedLikesInfo.newestLikes.$': { _id: 0 },
       };
 
       posts = await this.postModel
@@ -79,8 +80,20 @@ export class PostsRepository {
           if (r.postId === p.id)
             return (p.extendedLikesInfo.myStatus = r.likeStatus);
         });
+        // let lastThreePostLikeReactions =
+        //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
+        // const rrr = lastThreePostLikeReactions.map((r) =>
+        //   Object.assign(
+        //     {},
+        //     { login: r.login, userId: r.userId, addedAt: r.addedAt },
+        //   ),
+        // );
+        //  let postToReturn = JSON.parse(JSON.stringify(p));
+        // postToReturn.extendedLikesInfo.newestLikes = rrr;
+        // return postToReturn;
       });
     }
+
     let postsToReturn = JSON.parse(JSON.stringify(posts));
     postsToReturn.map(async (p) => {
       let lastThreePostLikeReactions =
@@ -90,11 +103,11 @@ export class PostsRepository {
           {},
           { login: r.login, userId: r.userId, addedAt: r.addedAt },
         ),
-      )
+      );
       p.extendedLikesInfo.newestLikes = rrr;
       return p;
     });
- 
+
     //  =====================================================================================================
 
     const totalCount: number = await this.postModel.countDocuments(filter);
