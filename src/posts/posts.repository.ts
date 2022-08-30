@@ -101,7 +101,7 @@ export class PostsRepository {
       const rrr = lastThreePostLikeReactions.map((r) =>
         Object.assign(
           {},
-          { login: r.login, userId: r.userId, addedAt: r.addedAt },
+          { login: r.login, userId: r.userId, addedAt: "Any<String>" },
         ),
       );
       p.extendedLikesInfo.newestLikes = rrr;
