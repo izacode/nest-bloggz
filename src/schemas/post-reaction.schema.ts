@@ -5,9 +5,9 @@ import { Document } from 'mongoose';
 @Schema()
 export class PostReaction extends Document {
   @Prop()
-  userId: string;
-  @Prop()
   addedAt: string;
+  @Prop()
+  userId: string;
   @Prop()
   login: string;
 
