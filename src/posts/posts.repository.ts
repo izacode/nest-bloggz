@@ -132,6 +132,7 @@ export class PostsRepository {
     console.log('============');
     console.log('============');
     console.log('Get post with id -----', id);
+    console.log('Get post with idUserInfo -----', userInfo);
     // const bloggers = await this.bloggerModel.find().exec();
 
     let post = await this.postModel
