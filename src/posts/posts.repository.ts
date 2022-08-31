@@ -128,51 +128,22 @@ export class PostsRepository {
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
-    console.log('============');
-    console.log('============');
-    console.log('============');
-    console.log('Get post with id -----', id);
-    console.log('Get post with idUserInfo -----', userInfo);
-    // const bloggers = await this.bloggerModel.find().exec();
-
     let post = await this.postModel
       .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
 
-   
     if (!post) throw new NotFoundException();
-    // const postWithBloggerName: Post = Object.assign(post, {
-    //   bloggerName: bloggers.find((b) => b.id === post?.bloggerId.toString())
-    //     ?.name,
-    // });
 
     if (
       !userInfo ||
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
-      console.log('Case with no user');
-      console.log('UserInfo -----', userInfo);
       post.extendedLikesInfo.myStatus = 'None';
-      console.log('============');
-      console.log('============');
-      console.log('============');
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
-      console.log(
-        'userPostReaction.likestatus-----',
-        userPostReaction.likeStatus,
-      );
 
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
-      console.log(
-        'post.extendedLikesInfo.myStatus-----',
-        post.extendedLikesInfo.myStatus,
-      );
-        console.log('UserInfo -----', userInfo);
-      console.log('============');
-      console.log('============');
-      console.log('============');
     }
 
     const lastThreePostLikeReactions =
@@ -190,10 +161,7 @@ export class PostsRepository {
         },
       )
       .exec();
-    console.log('End of Get post with id -----', id);
-    console.log('============');
-    console.log('============');
-    console.log('============');
+
     return post;
   }
 

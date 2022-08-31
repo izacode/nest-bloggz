@@ -43,7 +43,6 @@ export class PostsController {
   }
   @Get('/:id')
   async getPost(@Headers() headers: any, @Param('id') id: string) {
-    debugger;
     const post = await this.postsService.getPost(id, headers);
     return post;
   }
