@@ -147,7 +147,11 @@ export class PostsRepository {
       !userInfo ||
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
+      console.log('Case with no user');
       post.extendedLikesInfo.myStatus = 'None';
+      console.log('============');
+      console.log('============');
+      console.log('============');
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
@@ -180,7 +184,7 @@ export class PostsRepository {
         },
       )
       .exec();
-
+    console.log('End of Get post with id -----', id);
     return post;
   }
 
