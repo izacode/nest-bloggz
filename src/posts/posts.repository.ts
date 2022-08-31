@@ -76,23 +76,13 @@ export class PostsRepository {
         .exec();
 
       posts.map(async (p) => {
+        p.extendedLikesInfo.myStatus = 'None';
+
         userPostReactions.forEach((r) => {
           if (r.postId === p.id) {
             p.extendedLikesInfo.myStatus = r.likeStatus;
-            p.save()
-          } 
+          }
         });
-        // let lastThreePostLikeReactions =
-        //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
-        // console.log(
-        //   'inside postss repo lastThreePostLikeReactions----',
-        //   lastThreePostLikeReactions,
-        // );
-
-        // p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-
-        // console.log('p------------', p.extendedLikesInfo.newestLikes);
-        // return p;
       });
     }
 
