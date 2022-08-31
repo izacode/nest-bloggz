@@ -128,7 +128,10 @@ export class PostsRepository {
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
-    debugger;
+    console.log('============');
+    console.log('============');
+    console.log('============');
+    console.log('Get post with id -----', id);
     // const bloggers = await this.bloggerModel.find().exec();
 
     let post = await this.postModel
@@ -157,6 +160,9 @@ export class PostsRepository {
         'post.extendedLikesInfo.myStatus-----',
         post.extendedLikesInfo.myStatus,
       );
+      console.log('============');
+      console.log('============');
+      console.log('============');
     }
 
     const lastThreePostLikeReactions =
