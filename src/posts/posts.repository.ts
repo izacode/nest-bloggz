@@ -134,21 +134,11 @@ export class PostsRepository {
     console.log('Get post with id -----', id);
     // const bloggers = await this.bloggerModel.find().exec();
 
-    // let post = await this.postModel
-    //   .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
-    //   .exec();
-
     let post = await this.postModel
-      .findOne(
-        { id },
-        {
-          _id: 0,
-          __v: 0,
-          'extendedLikesInfo._id': 0,
-          'extendedLikesInfo.newestLikes._id': 0,
-        },
-      )
+      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
       .exec();
+
+   
     if (!post) throw new NotFoundException();
     // const postWithBloggerName: Post = Object.assign(post, {
     //   bloggerName: bloggers.find((b) => b.id === post?.bloggerId.toString())
@@ -185,17 +175,17 @@ export class PostsRepository {
       await this.reactionsRepository.getLastThreePostLikeReactions(id);
     post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
     await post.save();
-    // post = await this.postModel
-    //   .findOne(
-    //     { id },
-    //     {
-    //       _id: 0,
-    //       __v: 0,
-    //       'extendedLikesInfo._id': 0,
-    //       'extendedLikesInfo.newestLikes._id': 0,
-    //     },
-    //   )
-    //   .exec();
+    post = await this.postModel
+      .findOne(
+        { id },
+        {
+          _id: 0,
+          __v: 0,
+          'extendedLikesInfo._id': 0,
+          'extendedLikesInfo.newestLikes._id': 0,
+        },
+      )
+      .exec();
     console.log('End of Get post with id -----', id);
     console.log('============');
     console.log('============');
