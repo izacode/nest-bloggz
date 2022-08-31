@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blogger } from '../schemas/blogger.schema';
@@ -128,6 +128,7 @@ export class PostsRepository {
   }
 
   async getPost(id: string, userInfo?: any): Promise<Post> {
+    debugger;
     // const bloggers = await this.bloggerModel.find().exec();
 
     let post = await this.postModel
@@ -147,8 +148,15 @@ export class PostsRepository {
     } else {
       const userPostReaction =
         await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
-
+      console.log(
+        'userPostReaction.likestatus-----',
+        userPostReaction.likeStatus,
+      );
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
+      console.log(
+        'post.extendedLikesInfo.myStatus-----',
+        post.extendedLikesInfo.myStatus,
+      );
     }
 
     const lastThreePostLikeReactions =

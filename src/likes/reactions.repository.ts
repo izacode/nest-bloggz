@@ -80,7 +80,7 @@ export class ReactionsRepository {
   
     return lastThreeLikeReactions ? lastThreeLikeReactions : [];
   }
-
+// _id added 10:00
   async getUsersPostReaction(
     postId: string,
     userId: string,
@@ -91,7 +91,7 @@ export class ReactionsRepository {
           postId,
           userId,
         },
-        '-_id -__v',
+        ' -__v',
       );
     if (!userPostReaction) return null;
     return userPostReaction;

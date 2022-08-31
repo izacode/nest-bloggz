@@ -140,6 +140,7 @@ export class PostsService {
     }
 
     // If user has reacted before
+    debugger
     if (likeStatus === 'Like') {
       if (currentUserPostReaction.likeStatus === 'Like') return;
       if (currentUserPostReaction.likeStatus === 'Dislike') {
