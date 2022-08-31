@@ -151,6 +151,7 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
     ) {
       console.log('Case with no user');
+      console.log('UserInfo -----', userInfo);
       post.extendedLikesInfo.myStatus = 'None';
       console.log('============');
       console.log('============');
@@ -162,11 +163,13 @@ export class PostsRepository {
         'userPostReaction.likestatus-----',
         userPostReaction.likeStatus,
       );
+
       post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
       console.log(
         'post.extendedLikesInfo.myStatus-----',
         post.extendedLikesInfo.myStatus,
       );
+        console.log('UserInfo -----', userInfo);
       console.log('============');
       console.log('============');
       console.log('============');
