@@ -139,13 +139,14 @@ export class CommentsService {
       currentUserCommentReaction.save();
       return;
     } else {
-      if (currentUserCommentReaction.likeStatus === 'Dislike') 
+      if (currentUserCommentReaction.likeStatus === 'Dislike')
         comment.likesInfo.dislikesCount--;
-   
-      if (currentUserCommentReaction.likeStatus === 'Like') 
-        comment.likesInfo.likesCount--; 
+
+      if (currentUserCommentReaction.likeStatus === 'Like')
+        comment.likesInfo.likesCount--;
       currentUserCommentReaction.likeStatus = 'None';
       currentUserCommentReaction.save();
+      comment.save();
       return;
     }
   }
