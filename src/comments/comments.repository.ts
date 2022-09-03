@@ -39,6 +39,13 @@ export class CommentsRepository {
       { id },
       { _id: 0, __v: 0, 'likesInfo._id': 0, postId: 0 },
     );
+    const commentToDefaultLikestatus = await this.commentModel.findOne(
+      { id },
+      '-__v',
+    );
+    // new added
+    commentToDefaultLikestatus.likesInfo.myStatus = 'None'
+    await comment.save()
 
     return commentToReturn;
   }
