@@ -1,7 +1,7 @@
-import { IsNotEmpty } from "class-validator";
-
+import { IsIn, IsNotEmpty } from 'class-validator';
 
 export class LikeStatusDto {
-    @IsNotEmpty()
-    likeStatus: string
+  @IsNotEmpty()
+  @IsIn(['Like', 'Dislike', 'None'])
+  likeStatus: string;
 }

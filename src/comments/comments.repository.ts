@@ -19,7 +19,8 @@ export class CommentsRepository {
     if (!comment) throw new NotFoundException();
     if (
       !userInfo ||
-      !(await this.reactionsRepository.getUsersAllCommentsReactions(
+      !(await this.reactionsRepository.getUsersCommentReaction(
+        id,
         userInfo.sub,
       ))
     ) {
@@ -30,7 +31,7 @@ export class CommentsRepository {
           id,
           userInfo.sub,
         );
-      console.log('user likestatus for comment', userCommentReaction);
+
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
     await comment.save();
