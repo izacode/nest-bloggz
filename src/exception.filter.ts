@@ -15,6 +15,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     // if(status===409) return response.sendStatus(status)
 
+    const responseBodyForLikestatus: any = exception.getResponse();
+    if(status=== 400 && responseBodyForLikestatus.message[0].field === 'likeStatus'){
+       return response.status(status).json({
+         errorsMessages: [
+           {
+             message: 'wrong likestatus',
+             field: 'likeStatus',
+           },
+         ],
+       });
+    }
+
     if (status === 400) {
       let errorResponse = {
         errors: [],
@@ -27,7 +39,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
           field: 'code',
         });
       } else {
-        
         responseBody.message.forEach((m) => {
           let isFieldExists = errorResponse.errors.find(
             (mes) => mes.field === m.field,

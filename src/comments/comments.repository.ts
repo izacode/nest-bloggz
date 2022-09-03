@@ -30,7 +30,7 @@ export class CommentsRepository {
           id,
           userInfo.sub,
         );
-
+      console.log('user likestatus for comment', userCommentReaction);
       comment.likesInfo.myStatus = userCommentReaction.likeStatus;
     }
     await comment.save();
