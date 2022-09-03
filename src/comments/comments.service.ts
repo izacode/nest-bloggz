@@ -103,8 +103,6 @@ export class CommentsService {
 
     // If user hasn't reacted before
     if (!currentUserCommentReaction) {
-     
-
       const reaction = await this.reactionsService.createCommentReaction(
         id,
         currentUserData.sub,
@@ -124,65 +122,31 @@ export class CommentsService {
     // If user has reacted before
     if (likeStatus === 'Like') {
       if (currentUserCommentReaction.likeStatus === 'Like') return;
-      if (currentUserCommentReaction.likeStatus === 'Dislike') {
-        comment.likesInfo.myStatus = 'Like';
+      comment.likesInfo.likesCount++;
+      if (currentUserCommentReaction.likeStatus === 'Dislike')
         comment.likesInfo.dislikesCount--;
-        comment.likesInfo.likesCount++;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'Like';
-        currentUserCommentReaction.save();
-        return;
-      }
-      if (currentUserCommentReaction.likeStatus === 'None') {
-        comment.likesInfo.myStatus = 'Like';
-        comment.likesInfo.likesCount++;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'Like';
-        currentUserCommentReaction.save();
-        return;
-      }
+      comment.save();
+      currentUserCommentReaction.likeStatus = 'Like';
+      currentUserCommentReaction.save();
+      return;
     } else if (likeStatus === 'Dislike') {
       if (currentUserCommentReaction.likeStatus === 'Dislike') return;
-      if (currentUserCommentReaction.likeStatus === 'Like') {
-        comment.likesInfo.myStatus = 'Dislike';
-        comment.likesInfo.dislikesCount++;
+      comment.likesInfo.dislikesCount++;
+      if (currentUserCommentReaction.likeStatus === 'Like')
         comment.likesInfo.likesCount--;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'Dislike';
-        currentUserCommentReaction.save();
-        return;
-      }
-      if (currentUserCommentReaction.likeStatus === 'None') {
-        comment.likesInfo.myStatus = 'Dislike';
-        comment.likesInfo.dislikesCount++;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'Dislike';
-        currentUserCommentReaction.save();
-        return;
-      }
+      comment.save();
+      currentUserCommentReaction.likeStatus = 'Dislike';
+      currentUserCommentReaction.save();
+      return;
     } else {
-      if (currentUserCommentReaction.likeStatus === 'Dislike') {
-        comment.likesInfo.myStatus = 'None';
+      if (currentUserCommentReaction.likeStatus === 'Dislike') 
         comment.likesInfo.dislikesCount--;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'None';
-        currentUserCommentReaction.save();
-        return;
-      }
-      if (currentUserCommentReaction.likeStatus === 'Like') {
-        comment.likesInfo.myStatus = 'None';
-        comment.likesInfo.likesCount--;
-        comment.save();
-
-        currentUserCommentReaction.likeStatus = 'None';
-        currentUserCommentReaction.save();
-        return;
-      }
+   
+      if (currentUserCommentReaction.likeStatus === 'Like') 
+        comment.likesInfo.likesCount--; 
+      currentUserCommentReaction.likeStatus = 'None';
+      currentUserCommentReaction.save();
+      return;
     }
   }
   async getCommentByIdForReaction(id: string, headers?: any) {

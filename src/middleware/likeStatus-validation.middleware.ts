@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class LikeStatusValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
-    if (req.headers === undefined) next();
+    
 
     const statuses = ['Like', 'Dislike', 'None'];
     if (!statuses.includes(req.body.likeStatus)) {
