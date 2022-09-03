@@ -57,9 +57,9 @@ export class CommentsRepository {
     userInfo?: any,
   ): Promise<CustomResponseType> {
     const { PageNumber, PageSize } = filterDto;
-   
 
     let postComments: Comment[];
+    const restrictProperties = '-_id -postId -__v -likesInfo._id';
     if (
       !userInfo ||
       !(await this.reactionsRepository.getUsersAllCommentsReactions(
@@ -67,7 +67,7 @@ export class CommentsRepository {
       ))
     ) {
       postComments = await this.commentModel
-        .find({ postId: id }, '-_id -__v -likesInfo._id')
+        .find({ postId: id }, restrictProperties)
         .skip((+PageNumber - 1) * +PageSize)
         .limit(+PageSize)
         .exec();
@@ -83,7 +83,7 @@ export class CommentsRepository {
 
       postComments = (
         await this.commentModel
-          .find({ postId: id }, '-_id -__v -likesInfo._id')
+          .find({ postId: id }, restrictProperties)
           .skip((+PageNumber - 1) * +PageSize)
           .limit(+PageSize)
           .exec()
@@ -128,7 +128,10 @@ export class CommentsRepository {
     return isDeleted.deletedCount === 1;
   }
 
-  async getCommentByIdForReaction(id: string, userInfo?: any): Promise<Comment> {
+  async getCommentByIdForReaction(
+    id: string,
+    userInfo?: any,
+  ): Promise<Comment> {
     let comment = await this.commentModel.findOne({ id }, '-__v');
     if (!comment) throw new NotFoundException();
     if (

@@ -127,8 +127,7 @@ export class PostsService {
         currentUserData.username,
         likeStatusDto,
       );
-      console.log(reaction)
-      debugger;
+
       if (reaction.likeStatus === 'Like') {
         post.extendedLikesInfo.likesCount++;
         post.extendedLikesInfo.newestLikes;
@@ -151,37 +150,37 @@ export class PostsService {
     }
 
     // If user has reacted before
-    debugger;
+
     //  a
     if (likeStatus === 'Like') {
       if (currentUserPostReaction.likeStatus === 'Like') return;
       post.extendedLikesInfo.likesCount++;
-      currentUserPostReaction.likeStatus = 'Like';
-      currentUserPostReaction.save();
+
       post.extendedLikesInfo.newestLikes.unshift(currentUserPostReaction);
       if (currentUserPostReaction.likeStatus === 'Dislike')
         post.extendedLikesInfo.dislikesCount--;
-      console.log(post);
+      currentUserPostReaction.likeStatus = 'Like';
+      currentUserPostReaction.save();
       post.save();
       return;
     } else if (likeStatus === 'Dislike') {
       if (currentUserPostReaction.likeStatus === 'Dislike') return;
       post.extendedLikesInfo.dislikesCount++;
-      currentUserPostReaction.likeStatus = 'Dislike';
-      currentUserPostReaction.save();
+
       if (currentUserPostReaction.likeStatus === 'Like')
         post.extendedLikesInfo.likesCount--;
+      currentUserPostReaction.likeStatus = 'Dislike';
+      currentUserPostReaction.save();
       post.save();
       return;
     } else {
-      currentUserPostReaction.likeStatus = 'None';
-      currentUserPostReaction.save();
-
       if (currentUserPostReaction.likeStatus === 'Dislike')
         post.extendedLikesInfo.dislikesCount--;
 
       if (currentUserPostReaction.likeStatus === 'Like')
         post.extendedLikesInfo.likesCount--;
+      currentUserPostReaction.likeStatus = 'None';
+      currentUserPostReaction.save();
       post.save();
       return;
     }

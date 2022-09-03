@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class LikeStatusValidationMiddleware implements NestMiddleware {
-  // @InjectModel(Attempt.name) private attemptModel: Model<Attempt>;
   async use(req: Request, res: Response, next: NextFunction) {
+    if (req.headers === undefined) next();
 
-    const statuses = ["Like", "Dislike", "None"]
+    const statuses = ['Like', 'Dislike', 'None'];
     if (!statuses.includes(req.body.likeStatus)) {
       let errors = {
         errorsMessages: [
@@ -16,9 +16,8 @@ export class LikeStatusValidationMiddleware implements NestMiddleware {
           },
         ],
       };
-        
-        return res.status(400).json(errors);
-      
+
+      return res.status(400).json(errors);
     }
 
     next();
