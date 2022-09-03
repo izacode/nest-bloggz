@@ -1,4 +1,4 @@
-import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blogger } from '../schemas/blogger.schema';
@@ -35,6 +35,13 @@ export class PostsRepository {
     if (SearchNameTerm !== null && bloggerId !== undefined)
       filter = { bloggerId, title: { $regex: SearchNameTerm } };
 
+    const returnFilter = {
+      _id: 0,
+      __v: 0,
+      'extendedLikesInfo._id': 0,
+      'extendedLikesInfo.newestLikes': { _id: 0, postId: 0, likeStatus: 0 },
+    };
+
     let posts: Post[];
 
     // ============================================================================================================================
@@ -43,17 +50,22 @@ export class PostsRepository {
       !(await this.reactionsRepository.getUserAllPostsReactions(userInfo.sub))
     ) {
       posts = await this.postModel
-        .find(filter, { _id: 0, __v: 0, 'extendedLikesInfo._id': 0 })
+        .find(filter, returnFilter)
         .skip((+PageNumber - 1) * +PageSize)
         .limit(+PageSize)
-        .exec();
+        .lean();
 
       if (posts.length !== 0) {
         posts.map(async (p) => {
           p.extendedLikesInfo.myStatus = 'None';
-          const lastThreePostLikeReactions =
-            await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
-          p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+          // const lastThreePostLikeReactions =
+          //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
+          // p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+          if (p.extendedLikesInfo.newestLikes.length > 3)
+            p.extendedLikesInfo.newestLikes.splice(
+              3,
+              p.extendedLikesInfo.newestLikes.length - 3,
+            );
         });
       }
     } else {
@@ -62,18 +74,11 @@ export class PostsRepository {
       // const returnFilter =
       //   '-_id -__v -extendedInfo._id -extendedLikesInfo.newestLikes._id -extendedLikesInfo.newestLikes._id -extendedLikesInfo.newestLikes.addedAt ';
 
-      const returnFilter = {
-        _id: 0,
-        __v: 0,
-        'extendedLikesInfo._id': 0,
-        // 'extendedLikesInfo.newestLikes.$': { _id: 0 },
-      };
-
       posts = await this.postModel
         .find(filter, returnFilter)
         .skip((+PageNumber - 1) * +PageSize)
         .limit(+PageSize)
-        .exec();
+        .lean();
 
       posts.map(async (p) => {
         p.extendedLikesInfo.myStatus = 'None';
@@ -83,17 +88,28 @@ export class PostsRepository {
             p.extendedLikesInfo.myStatus = r.likeStatus;
           }
         });
+
+        if (p.extendedLikesInfo.newestLikes.length > 3)
+          p.extendedLikesInfo.newestLikes.splice(
+            3,
+            p.extendedLikesInfo.newestLikes.length - 3,
+          );
+        // let lastThreePostLikeReactions =
+        //   await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
+
+        // p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+        return p;
       });
     }
 
-    let postsToReturn = JSON.parse(JSON.stringify(posts));
-    postsToReturn.map(async (p) => {
-      let lastThreePostLikeReactions =
-        await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
+    // let postsToReturn = JSON.parse(JSON.stringify(posts));
+    // postsToReturn.map(async (p) => {
+    //   let lastThreePostLikeReactions =
+    //     await this.reactionsRepository.getLastThreePostLikeReactions(p.id);
 
-      p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-      return p;
-    });
+    //   p.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+    //   return p;
+    // });
 
     //  =====================================================================================================
 
@@ -103,7 +119,7 @@ export class PostsRepository {
       page: +PageNumber,
       pageSize: +PageSize,
       totalCount,
-      items: postsToReturn,
+      items: posts,
     };
 
     return customResponse;
@@ -191,33 +207,34 @@ export class PostsRepository {
 
   // ============================= Get Post for reactioon=============================================================
   async getPostForReact(id: string, userInfo?: any): Promise<Post> {
-    // const bloggers = await this.bloggerModel.find().exec();
-
     let post = await this.postModel
-      .findOne({ id }, { _id: 1, __v: 0, 'extendedLikesInfo._id': 0 })
+      .findOne(
+        { id },
+        {
+          __v: 0,
+
+          // 'extendedLikesInfo.newestLikes._id': 0,
+        },
+      )
       .exec();
     if (!post) throw new NotFoundException();
-    // const postWithBloggerName: Post = Object.assign(post, {
-    //   bloggerName: bloggers.find((b) => b.id === post?.bloggerId.toString())
-    //     ?.name,
-    // });
 
-    if (
-      !userInfo ||
-      !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
-    ) {
-      post.extendedLikesInfo.myStatus = 'None';
-    } else {
-      const userPostReaction =
-        await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
+    // if (
+    //   !userInfo ||
+    //   !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
+    // ) {
+    //   post.extendedLikesInfo.myStatus = 'None';
+    // } else {
+    //   const userPostReaction =
+    //     await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
 
-      post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
-    }
+    //   post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
+    // }
 
-    const lastThreePostLikeReactions =
-      await this.reactionsRepository.getLastThreePostLikeReactions(id);
-    post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-    await post.save();
+    // const lastThreePostLikeReactions =
+    //   await this.reactionsRepository.getLastThreePostLikeReactions(id);
+    // post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
+    // await post.save();
     return post;
   }
   // =======================================================================================================================

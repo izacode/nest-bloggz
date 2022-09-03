@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
 import { FilterDto } from '../dto/filter.dto';
 
 import { ExtendedLikesInfo, Post } from '../schemas/post.schema';
@@ -77,10 +77,9 @@ export class PostsService {
       const userInfo = await this.jwtService.verify(accessToken, {
         secret: await this.config.get('ACCESS_TOKEN_SECRET'),
       });
-      
+
       return this.postsRepository.getPost(id, userInfo);
     } catch {
-  
       return this.postsRepository.getPost(id);
     }
   }
@@ -111,6 +110,7 @@ export class PostsService {
     currentUserData: any,
   ) {
     const { likeStatus } = likeStatusDto;
+
     let post = await this.postsRepository.getPostForReact(id);
 
     const currentUserPostReaction =
@@ -121,86 +121,69 @@ export class PostsService {
 
     // If user hasn't reacted before
     if (!currentUserPostReaction) {
-
       const reaction = await this.reactionsService.createPostReaction(
         id,
         currentUserData.sub,
         currentUserData.username,
         likeStatusDto,
       );
-
-      post.extendedLikesInfo.myStatus = reaction.likeStatus;
+      console.log(reaction)
+      debugger;
       if (reaction.likeStatus === 'Like') {
         post.extendedLikesInfo.likesCount++;
+        post.extendedLikesInfo.newestLikes;
+        post.extendedLikesInfo.newestLikes.unshift(reaction);
+        // if (post.extendedLikesInfo.newestLikes.length > 3)
+        //   post.extendedLikesInfo.newestLikes.splice(
+        //     3,
+        //     post.extendedLikesInfo.newestLikes.length - 3,
+        //   );
       } else if (reaction.likeStatus === 'Dislike') {
         post.extendedLikesInfo.dislikesCount++;
       }
+      // console.log(post);
       post.save();
+      // console.log(
+      //   '==================================================================================',
+      // );
+      // console.log(post);
       return;
     }
 
     // If user has reacted before
-    debugger
+    debugger;
+    //  a
     if (likeStatus === 'Like') {
       if (currentUserPostReaction.likeStatus === 'Like') return;
-      if (currentUserPostReaction.likeStatus === 'Dislike') {
-        post.extendedLikesInfo.myStatus = 'Like';
+      post.extendedLikesInfo.likesCount++;
+      currentUserPostReaction.likeStatus = 'Like';
+      currentUserPostReaction.save();
+      post.extendedLikesInfo.newestLikes.unshift(currentUserPostReaction);
+      if (currentUserPostReaction.likeStatus === 'Dislike')
         post.extendedLikesInfo.dislikesCount--;
-        post.extendedLikesInfo.likesCount++;
-        post.save();
-
-        currentUserPostReaction.likeStatus = 'Like';
-        currentUserPostReaction.save();
-        return;
-      }
-      if (currentUserPostReaction.likeStatus === 'None') {
-        post.extendedLikesInfo.myStatus = 'Like';
-        post.extendedLikesInfo.likesCount++;
-        post.save();
-
-        currentUserPostReaction.likeStatus = 'Like';
-        currentUserPostReaction.save();
-      }
+      console.log(post);
+      post.save();
+      return;
     } else if (likeStatus === 'Dislike') {
       if (currentUserPostReaction.likeStatus === 'Dislike') return;
-      if (currentUserPostReaction.likeStatus === 'Like') {
-        post.extendedLikesInfo.myStatus = 'Dislike';
-        post.extendedLikesInfo.dislikesCount++;
+      post.extendedLikesInfo.dislikesCount++;
+      currentUserPostReaction.likeStatus = 'Dislike';
+      currentUserPostReaction.save();
+      if (currentUserPostReaction.likeStatus === 'Like')
         post.extendedLikesInfo.likesCount--;
-        post.save();
-
-        currentUserPostReaction.likeStatus = 'Dislike';
-        currentUserPostReaction.save();
-        return;
-      }
-      if (currentUserPostReaction.likeStatus === 'None') {
-        post.extendedLikesInfo.myStatus = 'Dislike';
-        post.extendedLikesInfo.dislikesCount++;
-        post.save();
-
-        currentUserPostReaction.likeStatus = 'Dislike';
-        currentUserPostReaction.save();
-        return;
-      }
+      post.save();
+      return;
     } else {
-      if (currentUserPostReaction.likeStatus === 'Dislike') {
-        post.extendedLikesInfo.myStatus = 'None';
+      currentUserPostReaction.likeStatus = 'None';
+      currentUserPostReaction.save();
+
+      if (currentUserPostReaction.likeStatus === 'Dislike')
         post.extendedLikesInfo.dislikesCount--;
-        post.save();
 
-        currentUserPostReaction.likeStatus = 'None';
-        currentUserPostReaction.save();
-        return;
-      }
-      if (currentUserPostReaction.likeStatus === 'Like') {
-        post.extendedLikesInfo.myStatus = 'None';
+      if (currentUserPostReaction.likeStatus === 'Like')
         post.extendedLikesInfo.likesCount--;
-        post.save();
-
-        currentUserPostReaction.likeStatus = 'None';
-        currentUserPostReaction.save();
-        return;
-      }
+      post.save();
+      return;
     }
   }
 }

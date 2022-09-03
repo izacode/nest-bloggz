@@ -75,12 +75,12 @@ export class ReactionsRepository {
         { postId, likeStatus: 'Like' },
         { _id: 0, postId: 0, likeStatus: 0, __v: 0 },
       )
-      .sort({ login: -1 })
+      .sort({ addedAt: -1 })
       .limit(3);
-  
+
     return lastThreeLikeReactions ? lastThreeLikeReactions : [];
   }
-// _id added 10:00
+  // _id added 10:00
   async getUsersPostReaction(
     postId: string,
     userId: string,
@@ -91,7 +91,8 @@ export class ReactionsRepository {
           postId,
           userId,
         },
-        ' -__v',
+        '-postId -__v',
+        // '-_id -postId -likeStatus -__v',
       );
     if (!userPostReaction) return null;
     return userPostReaction;
