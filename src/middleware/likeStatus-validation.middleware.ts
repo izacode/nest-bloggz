@@ -20,7 +20,8 @@ export class LikeStatusValidationMiddleware implements NestMiddleware {
     );
     if (
       (!req.headers.hasOwnProperty('authorization') ||
-        req.headers.authorization === 'Basic admin:qwerty') &&
+        req.headers.authorization === 'Basic admin:qwerty' ||
+        req.headers.authorization === 'Bearer YWRtaW46cXdlcnR5') &&
       Object.keys(req.body).length === 0
     )
       throw new UnauthorizedException();
