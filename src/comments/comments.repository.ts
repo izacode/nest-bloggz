@@ -67,6 +67,10 @@ export class CommentsRepository {
     const { PageNumber, PageSize } = filterDto;
 
     let postComments: Comment[];
+    let setNone = await this.commentModel.find().exec();
+    if (setNone.length !== 0) {
+      setNone.map((c) => (c.likesInfo.myStatus = 'None'));
+    }
     const restrictProperties = '-_id -postId -__v -likesInfo._id';
     if (
       !userInfo ||
@@ -106,11 +110,6 @@ export class CommentsRepository {
         console.log(' after likestatus.mystatus', c.likesInfo.myStatus);
         return c;
       });
-    }
-
-    let setNone = await this.commentModel.find().exec();
-    if (setNone.length !== 0) {
-      setNone.map((c) => (c.likesInfo.myStatus = 'None'));
     }
 
     const totalCount: number = await this.commentModel.countDocuments({
