@@ -67,10 +67,7 @@ export class CommentsRepository {
     const { PageNumber, PageSize } = filterDto;
 
     let postComments: Comment[];
-    let setNone = await this.commentModel.find().exec();
-    if (setNone.length !== 0) {
-      setNone.map((c) => (c.likesInfo.myStatus = 'None'));
-    }
+
     const restrictProperties = '-_id -postId -__v -likesInfo._id';
     if (
       !userInfo ||
@@ -102,6 +99,7 @@ export class CommentsRepository {
       ).map((c) => {
         console.log('comment id-----', c.id);
         console.log(' before likestatus.mystatus', c.likesInfo.myStatus);
+        c.likesInfo.myStatus = 'None';
         userCommentsReactions.forEach((r) => {
           if (r.commentId === c.id)
             return (c.likesInfo.myStatus = r.likeStatus);
