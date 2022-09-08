@@ -106,10 +106,10 @@ export class CommentsRepository {
       });
     }
 
-    let setNone = await this.commentModel.find().exec()
-    if(setNone.length !== 0) {
-       setNone.map(c =>  c.likesInfo.myStatus = 'None')
-    }
+    // let setNone = await this.commentModel.find().exec()
+    // if(setNone.length !== 0) {
+    //    setNone.map(c =>  c.likesInfo.myStatus = 'None')
+    // }
     
 
     const totalCount: number = await this.commentModel.countDocuments({

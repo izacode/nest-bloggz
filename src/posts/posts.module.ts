@@ -20,7 +20,9 @@ import {
   PostReactionSchema,
 } from '../schemas/post-reaction.schema';
 import { ReactionsService } from '../likes/reactions.service';
-import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validation.middleware';
+import { CredsValidationMiddleware } from '../middleware/creds-validation.middleware';
+
+
 
 @Module({
   imports: [
@@ -62,8 +64,7 @@ import { LikeStatusValidationMiddleware } from '../middleware/likeStatus-validat
 export class PostsModule {
   // configure(consumer: MiddlewareConsumer) {
   //   consumer
-  //     .apply(LikeStatusValidationMiddleware)
-      
-  //     .forRoutes({ path: 'posts/:id/like-status', method: RequestMethod.PUT });
+  //     .apply(CredsValidationMiddleware)
+  //     .forRoutes({ path: 'posts/:id/comments', method: RequestMethod.POST });
   // }
 }
