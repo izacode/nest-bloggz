@@ -44,8 +44,8 @@ export class CommentsRepository {
       '-__v',
     );
     // new added
-    commentToDefaultLikestatus.likesInfo.myStatus = 'None'
-    await comment.save()
+    commentToDefaultLikestatus.likesInfo.myStatus = 'None';
+    await comment.save();
 
     return commentToReturn;
   }
@@ -96,21 +96,22 @@ export class CommentsRepository {
           .limit(+PageSize)
           .exec()
       ).map((c) => {
+        console.log('comment id-----', c.id);
+        console.log(' before likestatus.mystatus', c.likesInfo.myStatus);
         userCommentsReactions.forEach((r) => {
           if (r.commentId === c.id)
-          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             return (c.likesInfo.myStatus = r.likeStatus);
         });
-       
+        console.log('comment id-----', c.id);
+        console.log(' after likestatus.mystatus', c.likesInfo.myStatus);
         return c;
       });
     }
 
-    // let setNone = await this.commentModel.find().exec()
-    // if(setNone.length !== 0) {
-    //    setNone.map(c =>  c.likesInfo.myStatus = 'None')
-    // }
-    
+    let setNone = await this.commentModel.find().exec();
+    if (setNone.length !== 0) {
+      setNone.map((c) => (c.likesInfo.myStatus = 'None'));
+    }
 
     const totalCount: number = await this.commentModel.countDocuments({
       postId: id,
