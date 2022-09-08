@@ -8,15 +8,16 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class LikeStatusValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
-    // console.log(
-    //   '====================================================================================================',
-    // );
+    console.log(
+      '====================================================================================================',
+    );
 
-    // console.log('headers.auth-----', req.headers.authorization);
-    // console.log('body-----', req.body);
-    // console.log(
-    //   '====================================================================================================',
-    // );
+    console.log('headers.auth-----', req.headers);
+  
+    console.log('body-----', req.body);
+    console.log(
+      '====================================================================================================',
+    );
     if (!req.headers.hasOwnProperty('authorization') && Object.keys(req.body).length === 0)
       throw new UnauthorizedException();
     const statuses = ['Like', 'Dislike', 'None'];
