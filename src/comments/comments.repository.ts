@@ -98,12 +98,19 @@ export class CommentsRepository {
       ).map((c) => {
         userCommentsReactions.forEach((r) => {
           if (r.commentId === c.id)
+          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             return (c.likesInfo.myStatus = r.likeStatus);
         });
-        // c.likesInfo.myStatus = 'None';
+       
         return c;
       });
     }
+
+    let setNone = await this.commentModel.find().exec()
+    if(setNone.length !== 0) {
+       setNone.map(c =>  c.likesInfo.myStatus = 'None')
+    }
+    
 
     const totalCount: number = await this.commentModel.countDocuments({
       postId: id,
