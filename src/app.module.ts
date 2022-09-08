@@ -25,7 +25,6 @@ import { BloggersController } from './bloggers/bloggers.controller';
     TestingClearModule,
     MongooseModule.forRoot(
       `mongodb+srv://thug:${process.env.MONGO_PASSWORD}@clusterblogg.gub0i.mongodb.net`,
-      // 'mongodb+srv://thug:test1234@clusterblogg.gub0i.mongodb.net',
     ),
   ],
 })

@@ -1,11 +1,25 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class LikeStatusValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
-    if (req.headers === undefined && Object.keys(req.body).length === 0) throw new UnauthorizedException()
-      const statuses = ['Like', 'Dislike', 'None'];
+    console.log(
+      '====================================================================================================',
+    );
+
+    console.log('headers-----', req.headers);
+    console.log('body-----', req.body);
+    console.log(
+      '====================================================================================================',
+    );
+    if (req.headers === undefined && Object.keys(req.body).length === 0)
+      throw new UnauthorizedException();
+    const statuses = ['Like', 'Dislike', 'None'];
     if (!statuses.includes(req.body.likeStatus)) {
       let errors = {
         errorsMessages: [
