@@ -6,6 +6,7 @@ import { Comment } from '../schemas/comment.schema';
 import { FilterDto } from '../dto/filter.dto';
 import { CustomResponseType } from '../types';
 import { ReactionsRepository } from '../likes/reactions.repository';
+import { CommentReaction } from 'src/schemas/comment-reaction.schema';
 
 @Injectable()
 export class CommentsRepository {
@@ -97,15 +98,12 @@ export class CommentsRepository {
           .limit(+PageSize)
           .exec()
       ).map((c) => {
-        console.log('comment id-----', c.id);
-        console.log(' before likestatus.mystatus', c.likesInfo.myStatus);
         c.likesInfo.myStatus = 'None';
         userCommentsReactions.forEach((r) => {
           if (r.commentId === c.id)
             return (c.likesInfo.myStatus = r.likeStatus);
         });
-        console.log('comment id-----', c.id);
-        console.log(' after likestatus.mystatus', c.likesInfo.myStatus);
+
         return c;
       });
     }
@@ -170,5 +168,54 @@ export class CommentsRepository {
     );
 
     return commentToReturn;
+  }
+
+  async reactOnComment(reaction: CommentReaction, comment: any) {
+    // ???
+    comment.likesInfo.myStatus = reaction.likeStatus;
+    // ???
+    if (reaction.likeStatus === 'Like') {
+      comment.likesInfo.likesCount++;
+    } else if (reaction.likeStatus === 'Dislike') {
+      comment.likesInfo.dislikesCount++;
+    }
+    comment.save();
+    return;
+  }
+  async reactOnCommentAgain(
+    currentUserCommentReaction: CommentReaction,
+    comment: any,
+    likeStatus: string,
+  ) {
+    if (likeStatus === 'Like') {
+      if (currentUserCommentReaction.likeStatus === 'Like') return;
+      comment.likesInfo.likesCount++;
+      if (currentUserCommentReaction.likeStatus === 'Dislike')
+        comment.likesInfo.dislikesCount--;
+      comment.save();
+      currentUserCommentReaction.likeStatus = 'Like';
+      currentUserCommentReaction.save();
+      return;
+    } else if (likeStatus === 'Dislike') {
+      if (currentUserCommentReaction.likeStatus === 'Dislike') return;
+      comment.likesInfo.dislikesCount++;
+      if (currentUserCommentReaction.likeStatus === 'Like')
+        comment.likesInfo.likesCount--;
+      comment.save();
+      currentUserCommentReaction.likeStatus = 'Dislike';
+      currentUserCommentReaction.save();
+      return;
+    } else {
+      if (currentUserCommentReaction.likeStatus === 'Dislike')
+        comment.likesInfo.dislikesCount--;
+
+      if (currentUserCommentReaction.likeStatus === 'Like')
+        comment.likesInfo.likesCount--;
+      currentUserCommentReaction.likeStatus = 'None';
+      currentUserCommentReaction.save();
+      comment.save();
+      return;
+    }
+    return;
   }
 }

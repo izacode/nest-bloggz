@@ -126,8 +126,6 @@ export class PostsRepository {
   }
 
   async createPost(newPost: CreatePostDto): Promise<Post | null> {
-    // const bloggers = await this.bloggerModel.find().exec();
-
     await this.postModel.create(newPost);
 
     const createdPost = await this.postModel.findOne(
@@ -212,65 +210,60 @@ export class PostsRepository {
         { id },
         {
           __v: 0,
-
-          // 'extendedLikesInfo.newestLikes._id': 0,
         },
       )
       .exec();
     if (!post) throw new NotFoundException();
 
-    // if (
-    //   !userInfo ||
-    //   !(await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub))
-    // ) {
-    //   post.extendedLikesInfo.myStatus = 'None';
-    // } else {
-    //   const userPostReaction =
-    //     await this.reactionsRepository.getUsersPostReaction(id, userInfo.sub);
-
-    //   post.extendedLikesInfo.myStatus = userPostReaction.likeStatus;
-    // }
-
-    // const lastThreePostLikeReactions =
-    //   await this.reactionsRepository.getLastThreePostLikeReactions(id);
-    // post.extendedLikesInfo.newestLikes = lastThreePostLikeReactions;
-    // await post.save();
     return post;
   }
-  // =======================================================================================================================
 
-  // async getAllBloggerPosts(
-  //   id: string,
-  //   filterDto: FilterDto,
-  // ): Promise<CustomResponseType> {
-  //   const { PageNumber, PageSize } = filterDto;
+  async reactOnPost(reaction: PostReaction, post: any) {
+    if (reaction.likeStatus === 'Like') {
+      post.extendedLikesInfo.likesCount++;
+      post.extendedLikesInfo.newestLikes;
+      post.extendedLikesInfo.newestLikes.unshift(reaction);
+    } else if (reaction.likeStatus === 'Dislike') {
+      post.extendedLikesInfo.dislikesCount++;
+    }
+    post.save();
+  }
+  async reactOnPostAgain(
+    currentUserPostReaction: PostReaction,
+    post: any,
+    likeStatus: string,
+  ) {
+    if (likeStatus === 'Like') {
+      if (currentUserPostReaction.likeStatus === 'Like') return;
+      post.extendedLikesInfo.likesCount++;
 
-  //   const posts: Post[] = await this.postModel
-  //     .find({ bloggerId: id }, '-_id -__v')
-  //     .skip((+PageNumber - 1) * +PageSize)
-  //     .limit(+PageSize)
-  //     .exec();
-  //   const totalCount: number = await this.postModel.countDocuments({
-  //     bloggerId: id,
-  //   });
-  //   const customResponse = {
-  //     pagesCount: Math.ceil(totalCount / +PageSize),
-  //     page: +PageNumber,
-  //     pageSize: +PageSize,
-  //     totalCount,
-  //     items: posts,
-  //   };
+      post.extendedLikesInfo.newestLikes.unshift(currentUserPostReaction);
+      if (currentUserPostReaction.likeStatus === 'Dislike')
+        post.extendedLikesInfo.dislikesCount--;
+      currentUserPostReaction.likeStatus = 'Like';
+      currentUserPostReaction.save();
+      post.save();
+      return;
+    } else if (likeStatus === 'Dislike') {
+      if (currentUserPostReaction.likeStatus === 'Dislike') return;
+      post.extendedLikesInfo.dislikesCount++;
 
-  //   return customResponse;
-  // }
+      if (currentUserPostReaction.likeStatus === 'Like')
+        post.extendedLikesInfo.likesCount--;
+      currentUserPostReaction.likeStatus = 'Dislike';
+      currentUserPostReaction.save();
+      post.save();
+      return;
+    } else {
+      if (currentUserPostReaction.likeStatus === 'Dislike')
+        post.extendedLikesInfo.dislikesCount--;
 
-  //  Get all Blogger's posts
-  // async getAllBloggerPosts(
-  //   id: string,
-  //   filterDto: FilterDto,
-  // ): Promise<CustomResponseType> {
-  //   const posts = await this.getPosts(filterDto, null, id);
-
-  //   return post;
-  // }
+      if (currentUserPostReaction.likeStatus === 'Like')
+        post.extendedLikesInfo.likesCount--;
+      currentUserPostReaction.likeStatus = 'None';
+      currentUserPostReaction.save();
+      post.save();
+      return;
+    }
+  }
 }

@@ -56,7 +56,6 @@ export class TestingClearService {
     } catch {
       console.log('Users collection does not exist');
     }
-
     return;
   }
 }

@@ -108,47 +108,15 @@ export class CommentsService {
         currentUserData.sub,
         likeStatusDto,
       );
-
-      comment.likesInfo.myStatus = reaction.likeStatus;
-      if (reaction.likeStatus === 'Like') {
-        comment.likesInfo.likesCount++;
-      } else if (reaction.likeStatus === 'Dislike') {
-        comment.likesInfo.dislikesCount++;
-      }
-      comment.save();
-      return;
+      return this.commentsRepository.reactOnComment(reaction, comment);
     }
 
     // If user has reacted before
-    if (likeStatus === 'Like') {
-      if (currentUserCommentReaction.likeStatus === 'Like') return;
-      comment.likesInfo.likesCount++;
-      if (currentUserCommentReaction.likeStatus === 'Dislike')
-        comment.likesInfo.dislikesCount--;
-      comment.save();
-      currentUserCommentReaction.likeStatus = 'Like';
-      currentUserCommentReaction.save();
-      return;
-    } else if (likeStatus === 'Dislike') {
-      if (currentUserCommentReaction.likeStatus === 'Dislike') return;
-      comment.likesInfo.dislikesCount++;
-      if (currentUserCommentReaction.likeStatus === 'Like')
-        comment.likesInfo.likesCount--;
-      comment.save();
-      currentUserCommentReaction.likeStatus = 'Dislike';
-      currentUserCommentReaction.save();
-      return;
-    } else {
-      if (currentUserCommentReaction.likeStatus === 'Dislike')
-        comment.likesInfo.dislikesCount--;
-
-      if (currentUserCommentReaction.likeStatus === 'Like')
-        comment.likesInfo.likesCount--;
-      currentUserCommentReaction.likeStatus = 'None';
-      currentUserCommentReaction.save();
-      comment.save();
-      return;
-    }
+    return this.commentsRepository.reactOnCommentAgain(
+      currentUserCommentReaction,
+      comment,
+      likeStatus,
+    );
   }
   async getCommentByIdForReaction(id: string, headers?: any) {
     try {

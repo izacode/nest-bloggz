@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { LikeStatusDto } from '../dto/like-status.dto';
 import { ReactionsRepository } from '../likes/reactions.repository';
 import { ReactionsService } from '../likes/reactions.service';
+import { PostReaction } from 'src/schemas/post-reaction.schema';
 
 @Injectable()
 export class PostsService {
@@ -96,13 +97,6 @@ export class PostsService {
     return this.postsRepository.deleteAllPosts();
   }
 
-  // async getAllBloggerPosts(
-  //   id: string,
-  //   filterDto: FilterDto,
-  // ): Promise<CustomResponseType> {
-  //   return this.postsRepository.getAllBloggerPosts(id, filterDto);
-  // }
-
   // React on post ======================================================================================================================
   async reactOnPost(
     id: string,
@@ -113,7 +107,7 @@ export class PostsService {
 
     let post = await this.postsRepository.getPostForReact(id);
 
-    const currentUserPostReaction =
+    const currentUserPostReaction: PostReaction =
       await this.reactionsRepository.getUsersPostReaction(
         id,
         currentUserData.sub,
@@ -127,62 +121,17 @@ export class PostsService {
         currentUserData.username,
         likeStatusDto,
       );
-
-      if (reaction.likeStatus === 'Like') {
-        post.extendedLikesInfo.likesCount++;
-        post.extendedLikesInfo.newestLikes;
-        post.extendedLikesInfo.newestLikes.unshift(reaction);
-        // if (post.extendedLikesInfo.newestLikes.length > 3)
-        //   post.extendedLikesInfo.newestLikes.splice(
-        //     3,
-        //     post.extendedLikesInfo.newestLikes.length - 3,
-        //   );
-      } else if (reaction.likeStatus === 'Dislike') {
-        post.extendedLikesInfo.dislikesCount++;
-      }
-      // console.log(post);
-      post.save();
-      // console.log(
-      //   '==================================================================================',
-      // );
-      // console.log(post);
-      return;
+      return this.postsRepository.reactOnPost(reaction, post);
     }
+
 
     // If user has reacted before
 
-    //  a
-    if (likeStatus === 'Like') {
-      if (currentUserPostReaction.likeStatus === 'Like') return;
-      post.extendedLikesInfo.likesCount++;
-
-      post.extendedLikesInfo.newestLikes.unshift(currentUserPostReaction);
-      if (currentUserPostReaction.likeStatus === 'Dislike')
-        post.extendedLikesInfo.dislikesCount--;
-      currentUserPostReaction.likeStatus = 'Like';
-      currentUserPostReaction.save();
-      post.save();
-      return;
-    } else if (likeStatus === 'Dislike') {
-      if (currentUserPostReaction.likeStatus === 'Dislike') return;
-      post.extendedLikesInfo.dislikesCount++;
-
-      if (currentUserPostReaction.likeStatus === 'Like')
-        post.extendedLikesInfo.likesCount--;
-      currentUserPostReaction.likeStatus = 'Dislike';
-      currentUserPostReaction.save();
-      post.save();
-      return;
-    } else {
-      if (currentUserPostReaction.likeStatus === 'Dislike')
-        post.extendedLikesInfo.dislikesCount--;
-
-      if (currentUserPostReaction.likeStatus === 'Like')
-        post.extendedLikesInfo.likesCount--;
-      currentUserPostReaction.likeStatus = 'None';
-      currentUserPostReaction.save();
-      post.save();
-      return;
-    }
+    return this.postsRepository.reactOnPostAgain(
+      currentUserPostReaction,
+      post,
+      likeStatus,
+    );
+    
   }
 }
