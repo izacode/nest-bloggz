@@ -16,12 +16,13 @@ import { EmailDto } from '../dto/email.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UsersRawSqlRepository } from '../users/users.raw-sql-repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private emailService: EmailService,
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRawSqlRepository,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {}
@@ -33,7 +34,7 @@ export class AuthService {
     // if(isUserExists) throw new BadRequestException();
     const passwordHash = await this._generateHash(password);
     const user = {
-      _id: new ObjectId(),
+  
       accountData: {
         userName: login,
         email,
@@ -58,10 +59,10 @@ export class AuthService {
       const result = await this.emailService.sendEmailConfirmationMassage(user);
       // const result = await emailManager.sendEmailConfirmationMassage(user);
       if (result) {
-        await this.usersRepository.updateSentEmails(user._id);
+        await this.usersRepository.updateSentEmails(createResult._id, user.accountData.email);
       }
     } catch (error) {
-      await this.usersRepository.deleteUser(user._id);
+      await this.usersRepository.deleteUser(createResult._id);
     }
 
     return createResult;
@@ -129,7 +130,7 @@ export class AuthService {
       );
 
       if (result) {
-        await this.usersRepository.updateSentEmails(user._id);
+        await this.usersRepository.updateSentEmails(user._id, email);
       }
       return result;
     } catch (error) {

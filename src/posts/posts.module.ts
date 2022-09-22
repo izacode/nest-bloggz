@@ -21,45 +21,22 @@ import {
 } from '../schemas/post-reaction.schema';
 import { ReactionsService } from '../likes/reactions.service';
 import { CredsValidationMiddleware } from '../middleware/creds-validation.middleware';
+import { PostsRawSqlRepository } from './posts.raw-sql-repository';
+import { ReactionsRawSqlRepository } from '../likes/reactions.raw-sql-repository';
 
 
 
 @Module({
-  imports: [
-    forwardRef(() => BloggersModule),
-    CommentsModule,
-    MongooseModule.forFeature([
-      {
-        name: Post.name,
-        schema: PostSchema,
-      },
-      {
-        name: Blogger.name,
-        schema: BloggerSchema,
-      },
-      {
-        name: Comment.name,
-        schema: CommentSchema,
-      },
-      {
-        name: CommentReaction.name,
-        schema: CommentReactionSchema,
-      },
-      {
-        name: PostReaction.name,
-        schema: PostReactionSchema,
-      },
-    ]),
-  ],
+  imports: [forwardRef(() => BloggersModule), CommentsModule],
   controllers: [PostsController],
   providers: [
     PostsService,
-    PostsRepository,
+    PostsRawSqlRepository,
     JwtService,
-    ReactionsRepository,
+    ReactionsRawSqlRepository,
     ReactionsService,
   ],
-  exports: [PostsService, PostsRepository],
+  exports: [PostsService, PostsRawSqlRepository],
 })
 export class PostsModule {
   // configure(consumer: MiddlewareConsumer) {

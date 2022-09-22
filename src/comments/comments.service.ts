@@ -10,14 +10,16 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ReactionsRepository } from '../likes/reactions.repository';
 import { ReactionsService } from '../likes/reactions.service';
+import { CommentsRawSqlRepository } from './comments.raw-sql-repository';
+import { ReactionsRawSqlRepository } from '../likes/reactions.raw-sql-repository';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    private commentsRepository: CommentsRepository,
+    private commentsRepository: CommentsRawSqlRepository,
     private config: ConfigService,
     private jwtService: JwtService,
-    private reactionsRepository: ReactionsRepository,
+    private reactionsRepository: ReactionsRawSqlRepository,
     private reactionsService: ReactionsService,
   ) {}
 

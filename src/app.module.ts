@@ -11,21 +11,37 @@ import { logger } from './middleware/logger.middleware';
 import { CommentsController } from './comments/comments.controller';
 import { PostsController } from './posts/posts.controller';
 import { BloggersController } from './bloggers/bloggers.controller';
+import { WalletsModule } from './wallets/wallets.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'farce',
+      database: 'Blog',
+      autoLoadEntities: false,
+      synchronize: false,
+    }),
     AuthModule,
     BloggersModule,
     PostsModule,
     CommentsModule,
     UsersModule,
-    TestingClearModule,
-    MongooseModule.forRoot(
-      `mongodb+srv://thug:${process.env.MONGO_PASSWORD}@clusterblogg.gub0i.mongodb.net`,
-    ),
+    // TestingClearModule,
+    // MongooseModule.forRoot(
+    //   `mongodb+srv://thug:${process.env.MONGO_PASSWORD}@clusterblogg.gub0i.mongodb.net`,
+    // ),
+
+    WalletsModule,
   ],
 })
 export class AppModule {

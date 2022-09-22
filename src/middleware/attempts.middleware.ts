@@ -15,11 +15,11 @@ export class AttemptsMiddleware implements NestMiddleware {
     const ip: string = req.ip;
     const attemptDate: Date = new Date();
     const url: string = req.url;
-    const attempt: Attempt = {
+    const attempt = {
       ip,
       attemptDate,
       url,
-    } as Attempt;
+    };
 
     try {
       await this.attemptModel.create(attempt);

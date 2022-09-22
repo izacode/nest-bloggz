@@ -21,46 +21,29 @@ import { Post, PostSchema } from '../schemas/post.schema';
 import { CommentsController } from './comments.controller';
 import { CommentsRepository } from './comments.repository';
 import { CommentsService } from './comments.service';
+import { CommentsRawSqlRepository } from './comments.raw-sql-repository';
+import { ReactionsRawSqlRepository } from '../likes/reactions.raw-sql-repository';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: Comment.name,
-        schema: CommentSchema,
-      },
-      {
-        name: Post.name,
-        schema: PostSchema,
-      },
-      {
-        name: Blogger.name,
-        schema: BloggerSchema,
-      },
-      {
-        name: CommentReaction.name,
-        schema: CommentReactionSchema,
-      },
-      {
-        name: PostReaction.name,
-        schema: PostReactionSchema,
-      },
-    ]),
-  ],
+  imports: [],
   controllers: [CommentsController],
   providers: [
     CommentsService,
-    CommentsRepository,
+    CommentsRawSqlRepository,
     ReactionsService,
-    ReactionsRepository,
+    ReactionsRawSqlRepository,
     JwtService,
+  
   ],
-  exports: [CommentsService, CommentsRepository],
+  exports: [CommentsService, CommentsRawSqlRepository],
 })
 export class CommentsModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LikeStatusValidationMiddleware)
-      .forRoutes({ path: 'comments/:id/like-status', method: RequestMethod.PUT },);
+      .forRoutes({
+        path: 'comments/:id/like-status',
+        method: RequestMethod.PUT,
+      });
   }
 }

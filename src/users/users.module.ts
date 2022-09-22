@@ -9,21 +9,14 @@ import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
 import { EmailManager } from '../emails/email.manager';
 import { EmailAdapter } from '../emails/email.adapter';
+import { UsersRawSqlRepository } from './users.raw-sql-repository';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-    ]),
-  ],
   controllers: [UsersController],
   providers: [
     EmailAdapter,
     UsersService,
-    UsersRepository,
+    UsersRawSqlRepository,
     AuthService,
     EmailService,
     JwtService,

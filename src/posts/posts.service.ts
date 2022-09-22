@@ -13,15 +13,18 @@ import { LikeStatusDto } from '../dto/like-status.dto';
 import { ReactionsRepository } from '../likes/reactions.repository';
 import { ReactionsService } from '../likes/reactions.service';
 import { PostReaction } from 'src/schemas/post-reaction.schema';
+import { PostsRawSqlRepository } from './posts.raw-sql-repository';
+import { ReactionsRawSqlRepository } from '../likes/reactions.raw-sql-repository';
+import { BloggersRawSqlRepository } from '../bloggers/bloggers.raw-sql-repository';
 
 @Injectable()
 export class PostsService {
   constructor(
-    private postsRepository: PostsRepository,
-    private bloggersRepository: BloggersRepository,
+    private postsRepository: PostsRawSqlRepository,
+    private bloggersRepository: BloggersRawSqlRepository,
     private jwtService: JwtService,
     private config: ConfigService,
-    private reactionsRepository: ReactionsRepository,
+    private reactionsRepository: ReactionsRawSqlRepository,
     private reactionsService: ReactionsService,
   ) {}
   async getPosts(filterDto: FilterDto, headers: any, bloggerId?: string) {
@@ -93,9 +96,6 @@ export class PostsService {
     return this.postsRepository.deletePost(id);
   }
 
-  async deleteAllPosts(): Promise<boolean> {
-    return this.postsRepository.deleteAllPosts();
-  }
 
   // React on post ======================================================================================================================
   async reactOnPost(
@@ -126,6 +126,7 @@ export class PostsService {
 
 
     // If user has reacted before
+    
 
     return this.postsRepository.reactOnPostAgain(
       currentUserPostReaction,

@@ -2,7 +2,7 @@ import { IsOptional } from 'class-validator';
 
 export class FilterDto {
   @IsOptional()
-  SearchNameTerm?: string = null;
+  SearchNameTerm?: string = '';
   @IsOptional()
   PageNumber?: string | number = 1;
   @IsOptional()

@@ -7,10 +7,11 @@ import { CreateBloggerDto } from './dto/create-blogger.dto';
 import { FilterDto } from '../dto/filter.dto';
 import { UpdateBloggerDto } from './dto/update-blogger.dto';
 import { validateOrReject } from 'class-validator';
+import { BloggersRawSqlRepository } from './bloggers.raw-sql-repository';
 
 @Injectable()
 export class BloggersService {
-  constructor(protected bloggersRepository: BloggersRepository) {}
+  constructor(protected bloggersRepository: BloggersRawSqlRepository) {}
 
   async getBloggers(filterDto: FilterDto): Promise<CustomResponseType> {
     return this.bloggersRepository.getBloggers(filterDto);
@@ -40,9 +41,5 @@ export class BloggersService {
 
   async deleteBlogger(id: string): Promise<boolean> {
     return this.bloggersRepository.deleteBlogger(id);
-  }
-
-  async deleteAllBloggers(): Promise<boolean> {
-    return this.bloggersRepository.deleteAllBloggers();
   }
 }

@@ -6,7 +6,7 @@ export class Attempt extends Document {
   @Prop()
   ip: string;
   @Prop()
-  attemptDate: Date;
+  attemptDate: string;
   @Prop()
   url: string;
 }

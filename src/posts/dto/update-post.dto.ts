@@ -1,8 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdatePostDto {
-  @IsOptional()
-  id: string;
   @IsNotEmpty()
   @MaxLength(30)
   title: string;

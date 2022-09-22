@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { LikeStatusDto } from 'src/dto/like-status.dto';
+import { ReactionsRawSqlRepository } from './reactions.raw-sql-repository';
 import { ReactionsRepository } from './reactions.repository';
 
 @Injectable()
 export class ReactionsService {
-  constructor(private reactionsRepository: ReactionsRepository) {}
+  constructor(private reactionsRepository: ReactionsRawSqlRepository) {}
   async createCommentReaction(
     commentId: string,
     userId: string,

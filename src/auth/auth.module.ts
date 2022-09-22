@@ -17,27 +17,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { BasicStrategy } from './strategies/basic.strategy';
+import { UsersRawSqlRepository } from '../users/users.raw-sql-repository';
+import { AttemptsRawSqlMiddleware } from '../middleware/attempts.raw-sql-middleware';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-      {
-        name: Attempt.name,
-        schema: AttemptSchema,
-      },
-    ]),
-    PassportModule,
-    JwtModule,
-  ],
+  imports: [PassportModule, JwtModule],
   controllers: [AuthController],
   providers: [
     AuthService,
     EmailService,
-    UsersRepository,
+    UsersRawSqlRepository,
     UsersService,
     EmailManager,
     EmailAdapter,
@@ -50,7 +39,7 @@ import { BasicStrategy } from './strategies/basic.strategy';
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(AttemptsMiddleware)
+      .apply(AttemptsRawSqlMiddleware)
       .forRoutes(
         'auth/login',
         'auth/registration',

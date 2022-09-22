@@ -1,36 +1,28 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ReactionsService } from '../likes/reactions.service';
+import { ReactionsRawSqlRepository } from '../likes/reactions.raw-sql-repository';
+import { PostsRawSqlRepository } from '../posts/posts.raw-sql-repository';
+import { PostsService } from '../posts/posts.service';
+
 
 
 import { BloggersController } from './bloggers.controller';
+import { BloggersRawSqlRepository } from './bloggers.raw-sql-repository';
 import { BloggersRepository } from './bloggers.repository';
 import { BloggersService } from './bloggers.service';
-import { Post, PostSchema } from '../schemas/post.schema';
-import { PostsModule } from '../posts/posts.module';
-import { Blogger, BloggerSchema } from '../schemas/blogger.schema';
-import { Comment, CommentSchema } from '../schemas/comment.schema';
 
 @Module({
-  imports: [
-    forwardRef(() => PostsModule),
-
-    MongooseModule.forFeature([
-      {
-        name: Post.name,
-        schema: PostSchema,
-      },
-      {
-        name: Blogger.name,
-        schema: BloggerSchema,
-      },
-      {
-        name: Comment.name,
-        schema: CommentSchema,
-      },
-    ]),
-  ],
   controllers: [BloggersController],
-  providers: [BloggersService, BloggersRepository],
-  exports: [BloggersService, BloggersRepository],
+  providers: [
+    BloggersService,
+    BloggersRawSqlRepository,
+    PostsService,
+    ReactionsRawSqlRepository,
+    PostsRawSqlRepository,
+    JwtService,
+    ReactionsService
+  ],
+  exports: [BloggersService, BloggersRawSqlRepository],
 })
 export class BloggersModule {}

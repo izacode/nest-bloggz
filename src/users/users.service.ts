@@ -1,22 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { ObjectId } from "mongodb";
-// import { Types} from "mongoose";
 import { FilterDto } from 'src/dto/filter.dto';
-
-
-
-
-
 import { v4 as uuidv4 } from 'uuid';
 import * as datefns from 'date-fns';
-
-
 import { UsersRepository } from '../users/users.repository';
-
 import * as bcrypt from 'bcrypt';
 import { EmailService } from '../emails/email.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UsersRawSqlRepository } from './users.raw-sql-repository';
 
 
 
@@ -24,7 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository,private emailService: EmailService) {}
+  constructor(private usersRepository: UsersRawSqlRepository,private emailService: EmailService) {}
 
   async checkRevokedTokensList(refreshToken: string, _id: string) {
     return this.usersRepository.checkRevokedTokensList(refreshToken, _id);
@@ -46,8 +38,9 @@ export class UsersService {
   }
 
   async deleteUser(id: string) {
-    const _id = new mongoose.Types.ObjectId(id);
-    return this.usersRepository.deleteUser(_id);
+    // const _id = new mongoose.Types.ObjectId(id);
+    // return this.usersRepository.deleteUser(_id);
+    return this.usersRepository.deleteUser(id);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
@@ -57,7 +50,7 @@ export class UsersService {
     // if(isUserExists) throw new BadRequestException();
     const passwordHash = await this._generateHash(password);
     const user = {
-      _id: new ObjectId(),
+      // _id: new ObjectId(), // Why do I put it here
       accountData: {
         userName: login,
         email,
@@ -76,16 +69,20 @@ export class UsersService {
         isConfirmed: false,
       },
     };
-    const createResult = await this.usersRepository.createUser1(user);
+  
+    const createResult =
+      await this.usersRepository.findUserByEmail(email);
+    // We would need confirmationCode, email and id as _id
 
     try {
       const result = await this.emailService.sendEmailConfirmationMassage(user);
       // const result = await emailManager.sendEmailConfirmationMassage(user);
       if (result) {
-        await this.usersRepository.updateSentEmails(user._id);
+
+        await this.usersRepository.updateSentEmails(createResult._id, email);
       }
     } catch (error) {
-      await this.usersRepository.deleteUser(user._id);
+      await this.usersRepository.deleteUser(createResult._id);
     }
 
     return createResult;

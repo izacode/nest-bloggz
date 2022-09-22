@@ -25,7 +25,7 @@ import { BasicAuthGuard } from '../auth/guards/basic-auth-guard';
 export class BloggersController {
   constructor(
     protected bloggersService: BloggersService,
-    private postsService: PostsService,
+    protected postsService: PostsService
   ) {}
 
   @Get()
@@ -35,7 +35,7 @@ export class BloggersController {
     return this.bloggersService.getBloggers(filterDto);
   }
 
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   @Post()
   async createBlogger(@Body() createBloggerDto: CreateBloggerDto) {
     const newBlogger: Blogger = await this.bloggersService.createBlogger(
@@ -50,7 +50,7 @@ export class BloggersController {
     return foundBlogger;
   }
 
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   @Put('/:id')
   @HttpCode(204)
   async updateBlogger(
@@ -65,7 +65,7 @@ export class BloggersController {
     return;
   }
 
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   @Delete('/:id')
   @HttpCode(204)
   async deleteBlogger(@Param('id') id: string) {
@@ -74,12 +74,6 @@ export class BloggersController {
     return;
   }
 
-  @Delete()
-  @HttpCode(204)
-  async deleteAllBloggers() {
-    const isDeleted: boolean = await this.bloggersService.deleteAllBloggers();
-    return isDeleted;
-  }
 
   @Get('/:id/posts')
   async getBloggerPosts(
